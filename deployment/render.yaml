@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: remind-ai-backend
+    env: docker
+    region: oregon
+    dockerfilePath: ../deployment/Dockerfile
+    dockerContext: ../backend
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        sync: false # Set in dashboard via Neon
+      - key: SECRET_KEY
+        generateValue: true
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
