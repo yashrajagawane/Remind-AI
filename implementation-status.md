@@ -1,7 +1,9 @@
 # ReMind AI — Implementation Status
 
 > Living progress tracker. Companion to [`implementation-plan.md`](implementation-plan.md).
-> Update this file at the end of every phase. **Last updated:** 2026-08-26 (initial).
+> Update this file at the end of every phase. **Last updated:** 2026-08-26 (repo consolidated + git initialized).
+
+> **Note:** A partial scaffold already exists (recovered from the Recycle Bin and consolidated here) — FastAPI routes, models, a face engine, and Next.js pages/components. This is a head start; each phase below will reconcile, complete, and harden the relevant parts rather than starting from zero.
 
 ---
 
@@ -51,11 +53,13 @@ No code written yet. Plan approved / pending approval.
 | Git installed | ✅ | v2.49.0 |
 | GitHub CLI (`gh`) installed | ✅ | v2.98.0 |
 | Git identity configured | ✅ | Yashraj Agawane / agawaneyash865@gmail.com |
-| GitHub login (`gh auth login`) | 🔵 | **Pending — user action.** Needed before first push |
-| GitHub repo created | ⬜ | Create in Phase 0 or after login |
+| GitHub login (`gh auth login`) | 🔵 | Pending — optional (publishing via GitHub Desktop instead) |
+| Local git repo | ✅ | Initialized in project home, branch `main`, initial commit `34ac6da` |
+| Published to GitHub | 🟡 | **In progress — publish via GitHub Desktop** (repo opened for you) |
 | Node.js + npm | ⬜ | Verify in Phase 0 |
 | Python 3.11+ | ✅ | Python 3.13.5 present |
 | Docker Desktop | ⬜ | Verify in Phase 0 (needed for compose) |
+| frontend `node_modules` | ⬜ | Not restored (excluded from git); run `npm install` in Phase 0 |
 | Neon `DATABASE_URL` | ⬜ | Needed Phase 1 (local Postgres fallback available) |
 | Cloudinary credentials | ⬜ | Needed Phase 3 |
 | Render.com account | ⬜ | Needed Phase 13 |
@@ -171,4 +175,5 @@ No code written yet. Plan approved / pending approval.
 ## Change Log
 | Date | Entry |
 |------|-------|
-| 2026-08-26 | Plan + status files created. Prompt analyzed (8 modules, 9 tables, full REST API). Awaiting go-ahead for Phase 0. |
+| 2026-08-26 | Plan + status files created. Prompt analyzed (8 modules, 9 tables, full REST API). |
+| 2026-08-26 | Recovered scaffold from Recycle Bin (orig `Desktop/Remind AI`, deleted 06:48 UTC outside our git commands) and consolidated into project home. Added `.gitignore`, removed embedded `frontend/.git`, `git init` (branch `main`), initial commit `34ac6da` (56 files, no node_modules/secrets). Publishing to GitHub via GitHub Desktop. |
