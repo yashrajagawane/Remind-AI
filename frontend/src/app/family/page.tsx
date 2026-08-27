@@ -44,7 +44,7 @@ export default function FamilyPortal() {
 
         {activeTab === "timeline" && (
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Today's Activity</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Today&apos;s Activity</h2>
             <div className="relative border-l border-gray-200 ml-4 space-y-8">
               <div className="pl-6 relative">
                 <div className="w-3 h-3 bg-success rounded-full absolute -left-1.5 top-1.5"></div>
@@ -53,7 +53,7 @@ export default function FamilyPortal() {
               </div>
               <div className="pl-6 relative">
                 <div className="w-3 h-3 bg-blue-500 rounded-full absolute -left-1.5 top-1.5"></div>
-                <p className="font-medium text-gray-900">Completed Medication "Blood Pressure"</p>
+                <p className="font-medium text-gray-900">Completed Medication &ldquo;Blood Pressure&rdquo;</p>
                 <p className="text-sm text-gray-500">08:15 AM</p>
               </div>
             </div>

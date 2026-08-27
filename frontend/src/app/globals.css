@@ -5,13 +5,14 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-cream: #FFF8F0;
-  --color-accent: #4A90D9;
-  --color-success: #52C41A;
-  --color-emergency: #D9363E;
+  --color-cream: #fff8f0;
+  --color-brand: #4a90d9;
+  --color-accent: #4a90d9;
+  --color-success: #52c41a;
+  --color-emergency: #d9363e;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);

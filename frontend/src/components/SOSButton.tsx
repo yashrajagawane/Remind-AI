@@ -26,7 +26,7 @@ export default function SOSButton() {
     // Call backend API (Mock)
     try {
       await fetch("http://localhost:8000/api/v1/sos/trigger", { method: "POST" });
-    } catch (error) {
+    } catch {
       console.log("Backend SOS triggered in dev mode.");
     }
 

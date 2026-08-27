@@ -76,14 +76,14 @@ export default function CaregiverDashboard() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between py-3 border-b">
                   <div>
-                    <p className="font-medium text-gray-900">Recognized "Priya (Daughter)"</p>
+                    <p className="font-medium text-gray-900">Recognized &ldquo;Priya (Daughter)&rdquo;</p>
                     <p className="text-sm text-gray-500">Confidence: High</p>
                   </div>
                   <span className="text-sm text-gray-500">10 mins ago</span>
                 </div>
                 <div className="flex items-center justify-between py-3 border-b">
                   <div>
-                    <p className="font-medium text-gray-900">Completed Medication "Blood Pressure"</p>
+                    <p className="font-medium text-gray-900">Completed Medication &ldquo;Blood Pressure&rdquo;</p>
                   </div>
                   <span className="text-sm text-gray-500">2 hours ago</span>
                 </div>

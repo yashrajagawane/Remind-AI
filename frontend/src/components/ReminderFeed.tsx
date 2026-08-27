@@ -22,7 +22,7 @@ export default function ReminderFeed() {
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 h-[50vh] overflow-y-auto">
       <h2 className="text-3xl font-bold text-gray-800 mb-6 sticky top-0 bg-white pb-4 border-b border-gray-100 z-10">
-        Today's Reminders
+        Today&apos;s Reminders
       </h2>
       
       <div className="flex flex-col gap-4">

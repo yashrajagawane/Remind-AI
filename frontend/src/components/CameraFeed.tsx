@@ -3,10 +3,11 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Camera, XCircle, ScanFace } from "lucide-react";
 import FaceResult from "./FaceResult";
+import type { FaceScanResult } from "@/types/face";
 
 export default function CameraFeed() {
   const [isCameraActive, setIsCameraActive] = useState(false);
-  const [scanResult, setScanResult] = useState<any>(null);
+  const [scanResult, setScanResult] = useState<FaceScanResult | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -58,7 +59,7 @@ export default function CameraFeed() {
             method: "POST",
             body: formData,
           });
-          const data = await response.json();
+          const data: FaceScanResult[] = await response.json();
           if (data && data.length > 0) {
             setScanResult(data[0]);
             // Voice feedback

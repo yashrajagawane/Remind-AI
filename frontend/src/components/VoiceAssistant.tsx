@@ -34,7 +34,7 @@ export default function VoiceAssistant() {
       </button>
       {isListening && transcript && (
         <div className="bg-black/70 text-white px-4 py-2 rounded-lg max-w-xs text-sm">
-          "{transcript}"
+          &ldquo;{transcript}&rdquo;
         </div>
       )}
     </div>

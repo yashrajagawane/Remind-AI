@@ -2,13 +2,10 @@
 
 import { motion } from "framer-motion";
 
+import type { FaceScanResult } from "@/types/face";
+
 interface FaceResultProps {
-  result: {
-    name: string;
-    relationship: string;
-    confidence: string;
-    last_interaction: string;
-  };
+  result: FaceScanResult;
 }
 
 export default function FaceResult({ result }: FaceResultProps) {

@@ -1,7 +1,7 @@
 # ReMind AI — Implementation Status
 
 > Living progress tracker. Companion to [`implementation-plan.md`](implementation-plan.md).
-> Update this file at the end of every phase. **Last updated:** 2026-08-26 (repo consolidated + git initialized).
+> Update this file at the end of every phase. **Last updated:** 2026-08-27 (Phase 0 complete & verified).
 
 > **Note:** A partial scaffold already exists (recovered from the Recycle Bin and consolidated here) — FastAPI routes, models, a face engine, and Next.js pages/components. This is a head start; each phase below will reconcile, complete, and harden the relevant parts rather than starting from zero.
 
@@ -18,8 +18,10 @@
 ---
 
 ## 🎯 Current Focus
-**Awaiting go-ahead to start → Phase 0 (Project Scaffold & Tooling).**
-No code written yet. Plan approved / pending approval.
+**Phase 0 complete ✅ → next up: Phase 1 (Database Layer & Migrations).**
+Frontend + backend scaffolds reconciled, hardened, and verified. All quality gates green
+(ESLint 0 errors, `tsc --noEmit` clean, `next build` succeeds; backend ruff/black/pytest 5/5).
+Ready to commit Phase 0 locally and push.
 
 ---
 
@@ -27,7 +29,7 @@ No code written yet. Plan approved / pending approval.
 
 | # | Phase | Stage | Status | Notes |
 |---|-------|-------|--------|-------|
-| 0 | Project Scaffold & Tooling | Foundation | ⬜ | — |
+| 0 | Project Scaffold & Tooling | Foundation | ✅ | Done & verified — see checklist below. Next.js **16.2.9** (plan text says 15). |
 | 1 | Database Layer & Migrations | Foundation | ⬜ | Needs Neon `DATABASE_URL` (local Docker fallback OK) |
 | 2 | Authentication & RBAC | Foundation | ⬜ | JWT keypair to generate |
 | 3 | Patients, Family & Caregiver Dashboard | Core | ⬜ | Needs Cloudinary creds |
@@ -42,7 +44,7 @@ No code written yet. Plan approved / pending approval.
 | 12 | Testing & QA | Hardening | ⬜ | ≥80% coverage, Playwright, axe-core |
 | 13 | Deployment & DevOps | Hardening | ⬜ | Vercel + Render + Neon + Cloudinary + CI/CD |
 
-**Progress:** 0 / 14 phases complete.
+**Progress:** 1 / 14 phases complete.
 
 ---
 
@@ -55,11 +57,11 @@ No code written yet. Plan approved / pending approval.
 | Git identity configured | ✅ | Yashraj Agawane / agawaneyash865@gmail.com |
 | GitHub login (`gh auth login`) | 🔵 | Pending — optional (publishing via GitHub Desktop instead) |
 | Local git repo | ✅ | Initialized in project home, branch `main`, initial commit `34ac6da` |
-| Published to GitHub | 🟡 | **In progress — publish via GitHub Desktop** (repo opened for you) |
-| Node.js + npm | ⬜ | Verify in Phase 0 |
+| Published to GitHub | ✅ | Repo live at `github.com/yashrajagawane/Remind-AI` (published via GitHub Desktop); local `main` in sync |
+| Node.js + npm | ✅ | Node v22.22.3, npm 10.9.8 |
 | Python 3.11+ | ✅ | Python 3.13.5 present |
-| Docker Desktop | ⬜ | Verify in Phase 0 (needed for compose) |
-| frontend `node_modules` | ⬜ | Not restored (excluded from git); run `npm install` in Phase 0 |
+| Docker Desktop | ❌ | **Not installed locally** — Dockerfile/compose authored & reviewed but runtime build deferred (verify in Phase 13) |
+| frontend `node_modules` | ✅ | Installed via `npm install` |
 | Neon `DATABASE_URL` | ⬜ | Needed Phase 1 (local Postgres fallback available) |
 | Cloudinary credentials | ⬜ | Needed Phase 3 |
 | Render.com account | ⬜ | Needed Phase 13 |
@@ -69,15 +71,22 @@ No code written yet. Plan approved / pending approval.
 
 ## Detailed Checklists
 
-### Phase 0 — Project Scaffold & Tooling ⬜
-- [ ] Monorepo directories (`frontend/ backend/ database/ docs/ deployment/ scripts/ tests/ .github/workflows/`)
-- [ ] Root `.gitignore`, `README.md`, `.env.example`, `LICENSE`
-- [ ] Frontend: Next.js 15 + TS + Tailwind + ShadCN + Framer Motion + Lucide
-- [ ] Frontend: theme tokens (colors/typography), dark mode, Zustand skeleton
-- [ ] Backend: FastAPI app factory, config, CORS/middleware, `/health`, `/docs`
-- [ ] `Dockerfile` (backend) + `docker-compose.yml` (backend + postgres + redis)
-- [ ] Lint/format/test tooling (eslint/prettier, ruff/black, pytest, vitest, playwright)
-- [ ] `git init` + first commit
+### Phase 0 — Project Scaffold & Tooling ✅
+- [x] Monorepo directories (`frontend/ backend/ database/ docs/ deployment/ scripts/ tests/ .github/workflows/`)
+- [x] Root `.gitignore`, `README.md`, `.env.example`, `LICENSE` (README authored; `.env.example` expanded with ENVIRONMENT/DEBUG/REDIS_URL/CORS)
+- [x] Frontend: Next.js **16.2.9** (Turbopack) + React 19 + TS + Tailwind v4 + ShadCN + Framer Motion + Lucide
+- [x] Frontend: theme tokens (colors/typography), dark mode, Zustand skeleton — hydration-safe theme system (pre-paint inline script → Zustand `getInitialTheme` → `useMounted` gate); landing page + `/patient` `/caregiver` `/family` routes build clean
+- [x] Backend: FastAPI app factory, config, CORS/middleware, `/health`, `/docs` (RequestContextMiddleware + `{status,data,error}` envelope)
+- [x] `Dockerfile` (backend) + `docker-compose.yml` (backend + postgres + redis) — authored & reviewed; **runtime build deferred (Docker not installed locally)**
+- [x] Lint/format/test tooling (eslint/prettier + prettier-plugin-tailwindcss, ruff/black, pytest 5/5) — **vitest/playwright deferred to Phase 12**
+- [x] `git init` + first commit (done 2026-08-26; published to GitHub via Desktop)
+
+**Deferrals recorded during Phase 0:**
+- vitest + playwright setup → **Phase 12** (Testing & QA)
+- Docker image build / compose runtime verification → **Phase 13** (Docker not installed locally)
+- Per-endpoint adoption of the `{status,data,error}` envelope → rolled out in feature phases
+- `FaceResult.tsx` `<img>` → `next/image` migration → **Phase 5** (Patient Interface); currently the sole lint warning
+- Re-add `libgl1` + `libglib2.0-0` apt layer to backend Dockerfile → **Phase 4** (OpenCV/DeepFace runtime deps)
 
 ### Phase 1 — Database Layer & Migrations ⬜
 - [ ] SQLAlchemy models (9 tables)
@@ -177,3 +186,4 @@ No code written yet. Plan approved / pending approval.
 |------|-------|
 | 2026-08-26 | Plan + status files created. Prompt analyzed (8 modules, 9 tables, full REST API). |
 | 2026-08-26 | Recovered scaffold from Recycle Bin (orig `Desktop/Remind AI`, deleted 06:48 UTC outside our git commands) and consolidated into project home. Added `.gitignore`, removed embedded `frontend/.git`, `git init` (branch `main`), initial commit `34ac6da` (56 files, no node_modules/secrets). Publishing to GitHub via GitHub Desktop. |
+| 2026-08-27 | **Phase 0 complete.** Reconciled recovered scaffold instead of rebuilding. Frontend: hydration-safe dark mode (`ui-store` + `useMounted` + pre-paint script), landing page, moved patient UI → `/patient`, kept `/caregiver` `/family`. Eliminated all 18 ESLint errors with real types (no `any`, no disable-comments): added `speech-recognition.d.ts` ambient types + `face.ts` `FaceScanResult`, refactored `useVoice` to typed refs, escaped JSX entities. Added prettier + tailwind class-sort, `typecheck`/`format` scripts. Rewrote backend `Dockerfile` (multi-stage, non-root, healthcheck) + `docker-compose.yml` (backend/db/redis) + expanded `.env.example` + authored `README.md`. **Gates:** ESLint 0 errors (1 deferred `<img>` warning), `tsc --noEmit` clean, `next build` green (5 routes), backend pytest 5/5. |

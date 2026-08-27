@@ -1,16 +1,16 @@
-from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
-from sqlalchemy.orm import Session
-from typing import List
 import os
 import shutil
-import base64
-from pydantic import BaseModel
 
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
+from app.ai.face_engine import find_best_match, generate_embedding
 from app.core.database import get_db
 from app.models.user import FaceEmbedding, FamilyMember
-from app.ai.face_engine import generate_embedding, find_best_match
 
 router = APIRouter()
+
 
 class FaceMatchResult(BaseModel):
     name: str
@@ -18,11 +18,10 @@ class FaceMatchResult(BaseModel):
     confidence: str
     last_interaction: str
 
+
 @router.post("/register")
 async def register_face(
-    family_member_id: str,
-    file: UploadFile = File(...),
-    db: Session = Depends(get_db)
+    family_member_id: str, file: UploadFile = File(...), db: Session = Depends(get_db)
 ):
     """
     Upload a photo and generate a face embedding.
@@ -37,7 +36,7 @@ async def register_face(
         shutil.copyfileobj(file.file, buffer)
 
     embedding = generate_embedding(temp_file)
-    
+
     # Cleanup
     if os.path.exists(temp_file):
         os.remove(temp_file)
@@ -48,19 +47,17 @@ async def register_face(
     db_emb = FaceEmbedding(
         family_member_id=family_member_id,
         embedding=embedding,
-        photo_url=None # Will integrate Cloudinary later
+        photo_url=None,  # Will integrate Cloudinary later
     )
     db.add(db_emb)
     db.commit()
     db.refresh(db_emb)
-    
+
     return {"status": "success", "embedding_id": db_emb.id}
 
-@router.post("/recognize", response_model=List[FaceMatchResult])
-async def recognize_face(
-    file: UploadFile = File(...),
-    db: Session = Depends(get_db)
-):
+
+@router.post("/recognize", response_model=list[FaceMatchResult])
+async def recognize_face(file: UploadFile = File(...), db: Session = Depends(get_db)):
     """
     Submit an image and return top matches.
     """
@@ -69,7 +66,7 @@ async def recognize_face(
         shutil.copyfileobj(file.file, buffer)
 
     target_emb = generate_embedding(temp_file)
-    
+
     if os.path.exists(temp_file):
         os.remove(temp_file)
 
@@ -92,16 +89,13 @@ async def recognize_face(
                     name=member.name,
                     relationship=member.relationship,
                     confidence=conf_str,
-                    last_interaction="Today"
+                    last_interaction="Today",
                 )
             ]
-            
+
     # Return Unknown Person if no match
     return [
         FaceMatchResult(
-            name="Unknown Person",
-            relationship="",
-            confidence="Low",
-            last_interaction="Never"
+            name="Unknown Person", relationship="", confidence="Low", last_interaction="Never"
         )
     ]

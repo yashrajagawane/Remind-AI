@@ -1,4 +1,6 @@
-version: '3.8'
+# ReMind AI — local development stack (backend + postgres + redis)
+# Usage (from repo root):  docker compose -f deployment/docker-compose.yml up --build
+# Compose v2: the top-level `version:` key is obsolete and intentionally omitted.
 
 services:
   backend:
@@ -8,13 +10,21 @@ services:
     ports:
       - "8000:8000"
     environment:
+      - ENVIRONMENT=development
+      - DEBUG=true
       - DATABASE_URL=postgresql://user:password@db:5432/remind_ai
-      - SECRET_KEY=dev_secret_key
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=dev_secret_key_change_in_production
+      - BACKEND_CORS_ORIGINS=http://localhost:3000
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
 
   db:
-    image: postgres:15
+    image: postgres:15-alpine
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
@@ -23,6 +33,22 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d remind_ai"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
 
 volumes:
   postgres_data:
+  redis_data:
