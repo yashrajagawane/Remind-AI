@@ -36,6 +36,11 @@ __pycache__/
 htmlcov/
 .tox/
 
+# Local SQLite dev database (Postgres/Neon used in prod)
+*.db
+*.sqlite
+*.sqlite3
+
 # Virtual environments
 venv/
 .venv/

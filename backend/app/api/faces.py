@@ -87,7 +87,7 @@ async def recognize_face(file: UploadFile = File(...), db: Session = Depends(get
             return [
                 FaceMatchResult(
                     name=member.name,
-                    relationship=member.relationship,
+                    relationship=member.relationship_label,
                     confidence=conf_str,
                     last_interaction="Today",
                 )
