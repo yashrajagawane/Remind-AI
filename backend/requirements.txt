@@ -18,6 +18,7 @@ pydantic-settings==2.7.0
 # --- Auth / security ---
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
+bcrypt==4.0.1
 
 # --- AI / CV numerics (DeepFace + OpenCV are heavy; installed only where face
 #     recognition runs — see Phase 4. The engine degrades gracefully without them.) ---
