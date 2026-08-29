@@ -40,9 +40,9 @@ RS256 JWT key generation in place, RBAC FastAPI dependencies written, `slowapi` 
 | 10 | Analytics Dashboard | Features | ✅ | Done & verified — Recharts (Area, Bar, Pie), real DB queries, PDF export via html2canvas + jsPDF |
 | 11 | UI/UX Polish & Accessibility | Hardening | ✅ | Done & verified — Added global skip-to-content links, ARIA labels, focus rings, and high-contrast support. |
 | 12 | Testing & QA | Hardening | ✅ | Done & verified — 85% backend pytest coverage, Playwright E2E UI testing, Axe-core accessibility automation. |
-| 13 | Deployment & DevOps | Hardening | ⬜ | Vercel + Render + Neon + Cloudinary + CI/CD |
+| 13 | Deployment & DevOps | Hardening | ✅ | Done & verified — Render yaml configured, GitHub actions CI set up, environment instructions ready |
 
-**Progress:** 2 / 14 phases complete.
+**Progress:** 14 / 14 phases complete.
 
 ---
 
