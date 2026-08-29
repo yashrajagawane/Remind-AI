@@ -30,6 +30,9 @@ class Settings(BaseSettings):
     ALGORITHM: str = "RS256"
     PRIVATE_KEY_PATH: str = "../certs/private_key.pem"
     PUBLIC_KEY_PATH: str = "../certs/public_key.pem"
+    # Optional: direct key content for production environments like Render
+    PRIVATE_KEY_CONTENT: str | None = None
+    PUBLIC_KEY_CONTENT: str | None = None
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 15
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 

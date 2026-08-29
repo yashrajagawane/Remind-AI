@@ -15,3 +15,7 @@ services:
         sync: false
       - key: CLOUDINARY_URL
         sync: false
+      - key: PRIVATE_KEY_CONTENT
+        sync: false
+      - key: PUBLIC_KEY_CONTENT
+        sync: false

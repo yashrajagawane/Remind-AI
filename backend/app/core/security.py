@@ -21,9 +21,20 @@ def _read_key(path_str: str) -> str:
     with open(key_path, "r") as f:
         return f.read()
 
+def _get_private_key() -> str:
+    if settings.PRIVATE_KEY_CONTENT:
+        return settings.PRIVATE_KEY_CONTENT.replace("\\n", "\n")
+    return _read_key(settings.PRIVATE_KEY_PATH)
 
-PRIVATE_KEY = _read_key(settings.PRIVATE_KEY_PATH)
-PUBLIC_KEY = _read_key(settings.PUBLIC_KEY_PATH)
+
+def _get_public_key() -> str:
+    if settings.PUBLIC_KEY_CONTENT:
+        return settings.PUBLIC_KEY_CONTENT.replace("\\n", "\n")
+    return _read_key(settings.PUBLIC_KEY_PATH)
+
+
+PRIVATE_KEY = _get_private_key()
+PUBLIC_KEY = _get_public_key()
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
