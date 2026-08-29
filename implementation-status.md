@@ -32,7 +32,7 @@ RS256 JWT key generation in place, RBAC FastAPI dependencies written, `slowapi` 
 | 2 | Authentication & RBAC | Foundation | ✅ | Done & verified — RS256 JWT, rate limits, RBAC tests pass, UI created |
 | 3 | Patients, Family & Caregiver Dashboard | Core | ✅ | Done & verified — full CRUD, CSV import, Cloudinary media service, dynamic dashboard UI |
 | 4 | AI Face Recognition Engine | Core | ✅ | Done & verified — FaceNet512, cosine similarity, multi-face ranking, event logging |
-| 5 | Patient Interface | Core | ⬜ | — |
+| 5 | Patient Interface | Core | ✅ | Done & verified — Large typography, dynamic CameraFeed wired to backend, patient identity resolution |
 | 6 | Reminder & Medication System | Features | ⬜ | — |
 | 7 | Voice Assistant | Features | ⬜ | Web Speech API (EN/HI/MR) |
 | 8 | Emergency SOS System | Features | ⬜ | — |

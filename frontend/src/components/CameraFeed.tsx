@@ -1,13 +1,28 @@
-"use client";
+'use client';
 
-import { useState, useRef, useEffect, useCallback } from "react";
-import { Camera, XCircle, ScanFace } from "lucide-react";
-import FaceResult from "./FaceResult";
-import type { FaceScanResult } from "@/types/face";
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { Camera, XCircle, ScanFace } from 'lucide-react';
+import FaceResult from './FaceResult';
+import { fetchApi } from '@/lib/api';
 
-export default function CameraFeed() {
+interface FaceScanResult {
+  rank: number;
+  member_id: string;
+  name: string;
+  relationship: string;
+  confidence_score: number;
+  confidence_label: string;
+  photo_url: string | null;
+}
+
+interface Props {
+  patientId: string;
+}
+
+export default function CameraFeed({ patientId }: Props) {
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [scanResult, setScanResult] = useState<FaceScanResult | null>(null);
+  const [isUnknown, setIsUnknown] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -19,8 +34,8 @@ export default function CameraFeed() {
         setIsCameraActive(true);
       }
     } catch (err) {
-      console.error("Error accessing camera:", err);
-      alert("Could not access camera. Please allow permissions.");
+      console.error('Error accessing camera:', err);
+      alert('Could not access camera. Please allow permissions.');
     }
   };
 
@@ -32,59 +47,69 @@ export default function CameraFeed() {
     }
     setIsCameraActive(false);
     setScanResult(null);
+    setIsUnknown(false);
   };
 
   const captureAndScan = useCallback(async () => {
-    if (!videoRef.current || !isCameraActive) return;
+    if (!videoRef.current || !isCameraActive || !patientId) return;
 
     setIsScanning(true);
     setScanResult(null);
+    setIsUnknown(false);
 
-    // Create a canvas to grab the frame
-    const canvas = document.createElement("canvas");
+    const canvas = document.createElement('canvas');
     canvas.width = videoRef.current.videoWidth;
     canvas.height = videoRef.current.videoHeight;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d');
+    
     if (ctx) {
       ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg"));
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/jpeg'));
       
       if (blob) {
         const formData = new FormData();
-        formData.append("file", blob, "scan.jpg");
+        formData.append('patient_id', patientId);
+        formData.append('file', blob, 'scan.jpg');
         
         try {
-          // Call FastAPI backend
-          const response = await fetch("http://localhost:8000/api/v1/faces/recognize", {
-            method: "POST",
+          const response = await fetchApi('/faces/recognize', {
+            method: 'POST',
             body: formData,
           });
-          const data: FaceScanResult[] = await response.json();
-          if (data && data.length > 0) {
-            setScanResult(data[0]);
-            // Voice feedback
-            if ("speechSynthesis" in window) {
-              const msg = new SpeechSynthesisUtterance(`Hello. This is ${data[0].name}, ${data[0].relationship}.`);
-              window.speechSynthesis.speak(msg);
+          
+          if (response.ok) {
+            const json = await response.json();
+            const data = json.data;
+            
+            if (data.matched && data.results && data.results.length > 0) {
+              const match = data.results[0];
+              setScanResult(match);
+              
+              if ('speechSynthesis' in window) {
+                const msg = new SpeechSynthesisUtterance(`Hello. This is ${match.name}, your ${match.relationship}.`);
+                window.speechSynthesis.speak(msg);
+              }
+            } else {
+              setIsUnknown(true);
             }
+          } else {
+            console.error('API Error', await response.text());
           }
         } catch (error) {
-          console.error("Scan failed", error);
+          console.error('Scan failed', error);
         }
       }
     }
     setIsScanning(false);
-  }, [isCameraActive]);
+  }, [isCameraActive, patientId]);
 
   useEffect(() => {
-    return () => {
-      stopCamera();
-    };
+    return () => stopCamera();
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center p-4 bg-cream min-h-[50vh] rounded-xl shadow-lg border border-gray-100">
-      <div className="relative w-full max-w-2xl bg-black rounded-xl overflow-hidden aspect-video flex items-center justify-center shadow-inner">
+    <div className="flex flex-col items-center justify-center p-6 bg-white min-h-[50vh] rounded-3xl shadow-xl border border-brand/10">
+      <div className="relative w-full max-w-2xl bg-black rounded-2xl overflow-hidden aspect-video flex items-center justify-center shadow-inner">
         {!isCameraActive ? (
           <div className="text-gray-400 flex flex-col items-center">
             <Camera size={64} className="mb-4 opacity-50" />
@@ -101,13 +126,28 @@ export default function CameraFeed() {
         )}
         
         {isScanning && (
-          <div className="absolute inset-0 bg-blue-500/20 animate-pulse border-4 border-blue-500 rounded-xl pointer-events-none" />
+          <div className="absolute inset-0 bg-brand/20 animate-pulse border-4 border-brand rounded-2xl pointer-events-none" />
         )}
 
-        {/* Overlay results */}
+        {/* Overlay Results */}
         {scanResult && (
-          <div className="absolute bottom-4 left-4 right-4 z-10">
-            <FaceResult result={scanResult} />
+          <div className="absolute bottom-6 left-6 right-6 z-10 bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-lg flex items-center gap-4">
+            {scanResult.photo_url && (
+              <img src={scanResult.photo_url} alt={scanResult.name} className="w-16 h-16 rounded-full object-cover border-2 border-brand" />
+            )}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900">{scanResult.name}</h3>
+              <p className="text-lg text-brand font-medium">{scanResult.relationship}</p>
+            </div>
+            <div className="ml-auto flex items-center justify-center bg-green-100 text-green-700 px-4 py-2 rounded-lg font-bold">
+              {scanResult.confidence_score > 0.8 ? 'High Match' : 'Match'}
+            </div>
+          </div>
+        )}
+
+        {isUnknown && (
+          <div className="absolute bottom-6 left-6 right-6 z-10 bg-red-500/90 backdrop-blur-sm p-4 rounded-xl shadow-lg flex items-center justify-center">
+            <h3 className="text-xl font-bold text-white">Face not recognized</h3>
           </div>
         )}
       </div>
@@ -116,7 +156,7 @@ export default function CameraFeed() {
         {!isCameraActive ? (
           <button
             onClick={startCamera}
-            className="flex-1 flex items-center justify-center gap-3 bg-accent text-white py-6 px-8 rounded-2xl text-2xl font-semibold shadow-lg hover:bg-blue-600 transition-colors"
+            className="flex-1 flex items-center justify-center gap-3 bg-brand text-white py-6 px-8 rounded-2xl text-2xl font-semibold shadow-lg hover:bg-brand/90 transition-colors"
           >
             <Camera size={36} />
             Turn On Camera
@@ -129,7 +169,7 @@ export default function CameraFeed() {
               className="flex-1 flex items-center justify-center gap-3 bg-success text-white py-6 px-8 rounded-2xl text-2xl font-semibold shadow-lg hover:bg-green-600 transition-colors disabled:opacity-50"
             >
               <ScanFace size={36} />
-              {isScanning ? "Scanning..." : "Scan Face"}
+              {isScanning ? 'Scanning...' : 'Scan Face'}
             </button>
             <button
               onClick={stopCamera}
