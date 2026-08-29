@@ -100,8 +100,16 @@ export default function PatientHome() {
         </main>
 
         {/* Floating Emergency Button */}
-        <SOSButton />
-        <VoiceAssistant />
+        <SOSButton patientId={patient.id} ref={(node) => {
+          if (node) {
+            (window as any).triggerSOS = node.triggerSOS;
+          }
+        }} />
+        <VoiceAssistant 
+          onSOSTrigger={() => {
+            if ((window as any).triggerSOS) (window as any).triggerSOS();
+          }} 
+        />
       </div>
     </ProtectedRoute>
   );

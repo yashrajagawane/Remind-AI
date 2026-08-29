@@ -44,7 +44,7 @@ export default function CaregiverDashboard() {
   const [patient, setPatient] = useState<Patient | null>(null);
   const [family, setFamily] = useState<FamilyMember[]>([]);
   const [reminders, setReminders] = useState<any[]>([]);
-  const [kpi] = useState<KpiData>({ faces_today: 0, reminder_compliance: 0, missed_alerts: 0, sos_events: 0 });
+  const [sosEvents, setSosEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [showReminderModal, setShowReminderModal] = useState(false);
@@ -54,7 +54,6 @@ export default function CaregiverDashboard() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      // 1. Get the caregiver's patients
       const pRes = await fetchApi('/patients/');
       if (!pRes.ok) throw new Error('Failed to fetch patients');
       const pData = await pRes.json();
@@ -68,19 +67,16 @@ export default function CaregiverDashboard() {
       const firstPatient = patients[0];
       setPatient(firstPatient);
 
-      // 2. Get family members for this patient
-      const fRes = await fetchApi(`/family/?patient_id=${firstPatient.id}`);
-      if (fRes.ok) {
-        const fData = await fRes.json();
-        setFamily(fData.data || []);
-      }
+      const [fRes, rRes, sRes] = await Promise.all([
+        fetchApi(`/family/?patient_id=${firstPatient.id}`),
+        fetchApi(`/reminders/?patient_id=${firstPatient.id}`),
+        fetchApi(`/sos/${firstPatient.id}/history`)
+      ]);
 
-      // 3. Get reminders for this patient
-      const rRes = await fetchApi(`/reminders/?patient_id=${firstPatient.id}`);
-      if (rRes.ok) {
-        const rData = await rRes.json();
-        setReminders(rData.data || []);
-      }
+      if (fRes.ok) setFamily((await fRes.json()).data || []);
+      if (rRes.ok) setReminders((await rRes.json()).data || []);
+      if (sRes.ok) setSosEvents((await sRes.json()).data || []);
+
     } catch (err) {
       console.error(err);
     } finally {
@@ -101,6 +97,22 @@ export default function CaregiverDashboard() {
     if (!confirm('Are you sure you want to remove this person?')) return;
     const res = await fetchApi(`/family/${memberId}`, { method: 'DELETE' });
     if (res.ok) setFamily(prev => prev.filter(m => m.id !== memberId));
+  };
+
+  const resolveSOS = async (eventId: string) => {
+    const res = await fetchApi(`/sos/${eventId}/resolve`, { method: 'PATCH' });
+    if (res.ok) {
+      setSosEvents(prev => prev.map(e => e.id === eventId ? { ...e, is_active: false } : e));
+    }
+  };
+
+  const activeSOS = sosEvents.find(e => e.is_active);
+
+  const kpi = {
+    faces_today: 0,
+    reminder_compliance: reminders.length > 0 ? Math.round((reminders.filter(r => r.status === 'completed').length / reminders.length) * 100) : 0,
+    missed_alerts: reminders.filter(r => r.status === 'missed').length,
+    sos_events: sosEvents.length,
   };
 
   return (
@@ -139,6 +151,24 @@ export default function CaregiverDashboard() {
 
         {/* Main */}
         <main className="flex-1 p-8 overflow-y-auto">
+          {activeSOS && (
+            <div className="mb-8 bg-emergency/10 border border-emergency/20 text-emergency p-4 rounded-xl flex items-center justify-between shadow-sm animate-pulse">
+              <div className="flex items-center gap-3">
+                <AlertTriangle size={24} />
+                <div>
+                  <h3 className="font-bold text-lg">ACTIVE EMERGENCY PROTOCOL</h3>
+                  <p className="text-sm">Patient triggered SOS via {activeSOS.trigger_method} at {new Date(activeSOS.created_at).toLocaleTimeString()}</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => resolveSOS(activeSOS.id)}
+                className="bg-emergency text-white px-4 py-2 rounded-lg font-medium hover:bg-emergency/90 active:scale-95 transition-all"
+              >
+                Resolve Incident
+              </button>
+            </div>
+          )}
+
           {/* Header */}
           <header className="mb-8 flex items-center justify-between">
             <div>
