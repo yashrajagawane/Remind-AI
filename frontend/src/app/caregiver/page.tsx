@@ -11,6 +11,7 @@ import { useAuthStore } from '@/stores/auth-store';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { AddFamilyModal } from '@/components/AddFamilyModal';
 import { AddReminderModal } from '@/components/AddReminderModal';
+import { AddPatientModal } from '@/components/AddPatientModal';
 import { Button } from '@/components/ui/button';
 
 interface Patient {
@@ -48,6 +49,7 @@ export default function CaregiverDashboard() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [showReminderModal, setShowReminderModal] = useState(false);
+  const [showPatientModal, setShowPatientModal] = useState(false);
   const { user, logout } = useAuthStore();
   const router = useRouter();
 
@@ -252,13 +254,14 @@ export default function CaregiverDashboard() {
                     </div>
                   </dl>
                 ) : (
-                  <p className="text-brand/50 text-sm">
-                    No patient linked yet. Go to{' '}
-                    <button className="text-brand underline" onClick={() => setActiveTab('network')}>
-                      Support Network
-                    </button>{' '}
-                    to get started.
-                  </p>
+                  <div className="text-center py-8">
+                    <p className="text-brand/50 text-sm mb-4">
+                      No patient linked yet. You must register a patient first.
+                    </p>
+                    <Button onClick={() => setShowPatientModal(true)}>
+                      Register Patient
+                    </Button>
+                  </div>
                 )}
               </div>
             </div>
@@ -286,6 +289,13 @@ export default function CaregiverDashboard() {
               {loading ? (
                 <div className="space-y-3">
                   {[1, 2, 3].map(i => <Skeleton key={i} className="h-14 w-full" />)}
+                </div>
+              ) : !patient ? (
+                <div className="text-center py-16 text-brand/40">
+                  <Users size={40} className="mx-auto mb-3 opacity-40" />
+                  <p className="font-medium">No Patient Registered</p>
+                  <p className="text-sm mt-2 mb-4">You must register a patient before adding family members.</p>
+                  <Button onClick={() => setShowPatientModal(true)}>Register Patient</Button>
                 </div>
               ) : family.length === 0 ? (
                 <div className="text-center py-16 text-brand/40">
@@ -363,6 +373,13 @@ export default function CaregiverDashboard() {
                 <div className="space-y-3">
                   {[1, 2, 3].map(i => <Skeleton key={i} className="h-14 w-full" />)}
                 </div>
+              ) : !patient ? (
+                <div className="text-center py-16 text-brand/40">
+                  <Clock size={40} className="mx-auto mb-3 opacity-40" />
+                  <p className="font-medium">No Patient Registered</p>
+                  <p className="text-sm mt-2 mb-4">You must register a patient before adding reminders.</p>
+                  <Button onClick={() => setShowPatientModal(true)}>Register Patient</Button>
+                </div>
               ) : reminders.length === 0 ? (
                 <div className="text-center py-16 text-brand/40">
                   <Clock size={40} className="mx-auto mb-3 opacity-40" />
@@ -436,6 +453,13 @@ export default function CaregiverDashboard() {
           patientId={patient.id}
           onClose={() => setShowReminderModal(false)}
           onSuccess={() => { fetchData(); setShowReminderModal(false); }}
+        />
+      )}
+      {/* Add Patient Modal */}
+      {showPatientModal && (
+        <AddPatientModal
+          onClose={() => setShowPatientModal(false)}
+          onSuccess={() => { fetchData(); setShowPatientModal(false); }}
         />
       )}
     </ProtectedRoute>
