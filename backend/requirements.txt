@@ -21,11 +21,11 @@ python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 bcrypt==4.0.1
 
-# --- AI / CV numerics (DeepFace + OpenCV are heavy; installed only where face
-#     recognition runs — see Phase 4. The engine degrades gracefully without them.) ---
+# --- AI / CV (DeepFace + OpenCV — heavy; installed where face recognition runs) ---
 numpy>=2.1,<3
-# deepface==0.0.93
-# opencv-python-headless==4.10.0.84
+deepface==0.0.93
+opencv-python-headless==4.10.0.84
+tf-keras==2.21.0              # Required by retina-face with TF 2.21+
 
 # --- Media storage (Phase 3) ---
 cloudinary==1.41.0
