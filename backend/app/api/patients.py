@@ -27,10 +27,21 @@ class PatientResponse(PatientCreate):
 @router.get("/")
 def list_patients(
     db: Session = Depends(get_db),
-    current_user: User = Depends(RoleChecker(["caregiver", "admin"]))
+    current_user: User = Depends(RoleChecker(["caregiver", "admin", "family"]))
 ):
     if current_user.role == "admin":
         patients = db.query(Patient).all()
+    elif current_user.role == "family":
+        # Family members see patients they are linked to via FamilyMember records
+        from app.models.user import FamilyMember
+        linked_patient_ids = (
+            db.query(FamilyMember.patient_id)
+            .filter(FamilyMember.name == current_user.name)
+            .distinct()
+            .all()
+        )
+        patient_ids = [pid for (pid,) in linked_patient_ids]
+        patients = db.query(Patient).filter(Patient.id.in_(patient_ids)).all() if patient_ids else []
     else:
         patients = db.query(Patient).filter(Patient.caregiver_id == current_user.id).all()
     
@@ -83,6 +94,14 @@ def get_patient(
     # Basic authorization check
     if current_user.role == "caregiver" and patient.caregiver_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized to access this patient")
+    if current_user.role == "family":
+        from app.models.user import FamilyMember
+        link = db.query(FamilyMember).filter(
+            FamilyMember.patient_id == id,
+            FamilyMember.name == current_user.name
+        ).first()
+        if not link:
+            raise HTTPException(status_code=403, detail="Not authorized (not linked to this patient)")
         
     return success({
         "id": patient.id,

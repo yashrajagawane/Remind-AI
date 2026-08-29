@@ -36,7 +36,7 @@ RS256 JWT key generation in place, RBAC FastAPI dependencies written, `slowapi` 
 | 6 | Reminder & Medication System | Features | ✅ | Done & verified — Full CRUD API, filtering, caregiver scheduling UI, dynamic patient feed with voice |
 | 7 | Voice Assistant | Features | ✅ | Done & verified — Web Speech API with EN/HI/MR, command routing, language switcher UI |
 | 8 | Emergency SOS System | Features | ✅ | Done & verified — SOS trigger endpoint, Voice & Button triggers, Caregiver Alert Banner, Resolution Flow |
-| 9 | Family Portal | Features | ⬜ | — |
+| 9 | Family Portal | Features | ✅ | Done & verified — read-only dashboard showing timeline, reminders, and SOS history. Updated backend RBAC. |
 | 10 | Analytics Dashboard | Features | ⬜ | Recharts + PDF export |
 | 11 | UI/UX Polish & Accessibility | Hardening | ⬜ | Lighthouse ≥90, WCAG AA |
 | 12 | Testing & QA | Hardening | ⬜ | ≥80% coverage, Playwright, axe-core |

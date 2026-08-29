@@ -82,6 +82,14 @@ def _assert_patient_access(patient_id: str, user: User, db: Session) -> Patient:
         raise HTTPException(status_code=404, detail="Patient not found")
     if user.role == "caregiver" and patient.caregiver_id != user.id:
         raise HTTPException(status_code=403, detail="Not authorized")
+    if user.role == "family":
+        from app.models.user import FamilyMember
+        link = db.query(FamilyMember).filter(
+            FamilyMember.patient_id == patient_id,
+            FamilyMember.name == user.name
+        ).first()
+        if not link:
+            raise HTTPException(status_code=403, detail="Not authorized (not linked to this patient)")
     return patient
 
 
@@ -95,7 +103,7 @@ def list_reminders(
     status: Optional[str] = Query(None),
     category: Optional[str] = Query(None),
     db: Session = Depends(get_db),
-    current_user: User = Depends(RoleChecker(["caregiver", "admin", "patient"])),
+    current_user: User = Depends(RoleChecker(["caregiver", "admin", "patient", "family"])),
 ):
     """List reminders for a patient, optionally filtered by status and category."""
     _assert_patient_access(patient_id, current_user, db)

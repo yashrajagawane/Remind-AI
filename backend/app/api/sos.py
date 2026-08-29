@@ -44,6 +44,14 @@ def _assert_patient_access(patient_id: str, user: User, db: Session) -> Patient:
         raise HTTPException(status_code=404, detail="Patient not found")
     if user.role == "caregiver" and patient.caregiver_id != user.id:
         raise HTTPException(status_code=403, detail="Not authorized to access this patient's SOS data")
+    if user.role == "family":
+        from app.models.user import FamilyMember
+        link = db.query(FamilyMember).filter(
+            FamilyMember.patient_id == patient_id,
+            FamilyMember.name == user.name
+        ).first()
+        if not link:
+            raise HTTPException(status_code=403, detail="Not authorized (not linked to this patient)")
     return patient
 
 
@@ -101,7 +109,7 @@ def trigger_sos(
 def get_sos_history(
     patient_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(RoleChecker(["caregiver", "admin", "patient"])),
+    current_user: User = Depends(RoleChecker(["caregiver", "admin", "patient", "family"])),
 ):
     """View SOS history."""
     _assert_patient_access(patient_id, current_user, db)
