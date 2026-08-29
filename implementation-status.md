@@ -39,7 +39,7 @@ RS256 JWT key generation in place, RBAC FastAPI dependencies written, `slowapi` 
 | 9 | Family Portal | Features | ✅ | Done & verified — read-only dashboard showing timeline, reminders, and SOS history. Updated backend RBAC. |
 | 10 | Analytics Dashboard | Features | ✅ | Done & verified — Recharts (Area, Bar, Pie), real DB queries, PDF export via html2canvas + jsPDF |
 | 11 | UI/UX Polish & Accessibility | Hardening | ✅ | Done & verified — Added global skip-to-content links, ARIA labels, focus rings, and high-contrast support. |
-| 12 | Testing & QA | Hardening | ⬜ | ≥80% coverage, Playwright, axe-core |
+| 12 | Testing & QA | Hardening | ✅ | Done & verified — 85% backend pytest coverage, Playwright E2E UI testing, Axe-core accessibility automation. |
 | 13 | Deployment & DevOps | Hardening | ⬜ | Vercel + Render + Neon + Cloudinary + CI/CD |
 
 **Progress:** 2 / 14 phases complete.
