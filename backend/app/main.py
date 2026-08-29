@@ -40,6 +40,9 @@ def create_app() -> FastAPI:
     _register_exception_handlers(app)
     _register_routes(app)
 
+    from app.core.rate_limit import limiter
+    app.state.limiter = limiter
+
     logger.info(
         "%s v%s initialised (env=%s)",
         settings.PROJECT_NAME,
@@ -62,8 +65,11 @@ def _register_middleware(app: FastAPI) -> None:
         expose_headers=["X-Request-ID", "X-Process-Time-ms"],
     )
 
-
 def _register_exception_handlers(app: FastAPI) -> None:
+    from slowapi.errors import RateLimitExceeded
+    from slowapi import _rate_limit_exceeded_handler
+
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
     @app.exception_handler(StarletteHTTPException)
     async def http_exception_handler(request: Request, exc: StarletteHTTPException):
         return JSONResponse(

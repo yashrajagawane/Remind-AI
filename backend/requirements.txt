@@ -14,6 +14,7 @@ psycopg2-binary==2.9.10        # PostgreSQL driver (Neon / local); SQLite used a
 # --- Validation / settings ---
 pydantic==2.10.4
 pydantic-settings==2.7.0
+email-validator==2.3.0
 
 # --- Auth / security ---
 python-jose[cryptography]==3.3.0
@@ -31,3 +32,4 @@ cloudinary==1.41.0
 
 # --- Caching / rate-limit backend (Phase 2) ---
 redis==5.2.1
+slowapi==0.1.9

@@ -27,10 +27,9 @@ class Settings(BaseSettings):
     REDIS_URL: str = "redis://localhost:6379/0"
 
     # --- Security / JWT ---
-    # NOTE: HS256 placeholder for scaffold; Phase 2 upgrades this to RS256
-    # (access 15 min / refresh 7 days) with a generated keypair.
-    SECRET_KEY: str = "CHANGE_ME_IN_PRODUCTION_use_a_long_random_secret"
-    ALGORITHM: str = "HS256"
+    ALGORITHM: str = "RS256"
+    PRIVATE_KEY_PATH: str = "../certs/private_key.pem"
+    PUBLIC_KEY_PATH: str = "../certs/public_key.pem"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 15
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
