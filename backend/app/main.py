@@ -103,7 +103,7 @@ def _register_exception_handlers(app: FastAPI) -> None:
 
 def _register_routes(app: FastAPI) -> None:
     # Imported lazily so app metadata/handlers are set up before route modules load.
-    from app.api import analytics, auth, faces, patients, reminders, sos
+    from app.api import analytics, auth, faces, patients, reminders, sos, family
 
     @app.get("/", tags=["meta"], summary="API root")
     def read_root():
@@ -129,6 +129,7 @@ def _register_routes(app: FastAPI) -> None:
 
     app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
     app.include_router(patients.router, prefix=f"{settings.API_V1_STR}/patients", tags=["patients"])
+    app.include_router(family.router, prefix=f"{settings.API_V1_STR}/family", tags=["family"])
     app.include_router(faces.router, prefix=f"{settings.API_V1_STR}/faces", tags=["faces"])
     app.include_router(
         reminders.router, prefix=f"{settings.API_V1_STR}/reminders", tags=["reminders"]

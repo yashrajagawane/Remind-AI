@@ -1,139 +1,305 @@
-"use client";
+'use client';
 
-import { Users, Activity, CheckCircle, AlertTriangle } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  Users, Activity, CheckCircle, AlertTriangle,
+  LogOut, Plus, Pencil, Trash2, RefreshCw,
+} from 'lucide-react';
+import { fetchApi } from '@/lib/api';
+import { useAuthStore } from '@/stores/auth-store';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { AddFamilyModal } from '@/components/AddFamilyModal';
+import { Button } from '@/components/ui/button';
+
+interface Patient {
+  id: string;
+  name: string;
+  dob: string;
+  medical_notes: string;
+}
+
+interface FamilyMember {
+  id: string;
+  name: string;
+  relationship: string;
+  phone_number: string | null;
+  photo_url: string | null;
+}
+
+interface KpiData {
+  faces_today: number;
+  reminder_compliance: number;
+  missed_alerts: number;
+  sos_events: number;
+}
+
+function Skeleton({ className = '' }: { className?: string }) {
+  return <div className={`animate-pulse bg-brand/10 rounded-md ${className}`} />;
+}
 
 export default function CaregiverDashboard() {
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState<'overview' | 'network'>('overview');
+  const [patient, setPatient] = useState<Patient | null>(null);
+  const [family, setFamily] = useState<FamilyMember[]>([]);
+  const [kpi] = useState<KpiData>({ faces_today: 0, reminder_compliance: 0, missed_alerts: 0, sos_events: 0 });
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const { user, logout } = useAuthStore();
+  const router = useRouter();
+
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      // 1. Get the caregiver's patients
+      const pRes = await fetchApi('/patients/');
+      if (!pRes.ok) throw new Error('Failed to fetch patients');
+      const pData = await pRes.json();
+      const patients: Patient[] = pData.data || [];
+
+      if (patients.length === 0) {
+        setLoading(false);
+        return;
+      }
+
+      const firstPatient = patients[0];
+      setPatient(firstPatient);
+
+      // 2. Get family members for this patient
+      const fRes = await fetchApi(`/family/?patient_id=${firstPatient.id}`);
+      if (fRes.ok) {
+        const fData = await fRes.json();
+        setFamily(fData.data || []);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
+
+  const handleDelete = async (memberId: string) => {
+    if (!confirm('Are you sure you want to remove this person?')) return;
+    const res = await fetchApi(`/family/${memberId}`, { method: 'DELETE' });
+    if (res.ok) setFamily(prev => prev.filter(m => m.id !== memberId));
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar Navigation */}
-      <aside className="w-64 bg-white border-r border-gray-200 h-screen p-6 sticky top-0">
-        <div className="text-2xl font-bold text-gray-900 mb-8">ReMind Admin</div>
-        <nav className="flex flex-col gap-2">
-          <button 
-            onClick={() => setActiveTab("overview")}
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-left ${activeTab === "overview" ? "bg-blue-50 text-accent font-medium" : "text-gray-600 hover:bg-gray-100"}`}
-          >
-            <Activity size={20} /> Overview
-          </button>
-          <button 
-            onClick={() => setActiveTab("network")}
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-left ${activeTab === "network" ? "bg-blue-50 text-accent font-medium" : "text-gray-600 hover:bg-gray-100"}`}
-          >
-            <Users size={20} /> Support Network
-          </button>
-        </nav>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 p-8">
-        <header className="mb-8 flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-900">Patient: Sarah Jenkins</h1>
-          <button className="bg-white px-4 py-2 border rounded-lg shadow-sm text-gray-600 hover:bg-gray-50">
-            Log out
-          </button>
-        </header>
-
-        {activeTab === "overview" && (
-          <div className="space-y-8">
-            {/* KPI Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col gap-2">
-                <div className="flex items-center justify-between text-gray-500">
-                  <span className="font-medium">Faces Recognized</span>
-                  <Users size={20} />
-                </div>
-                <div className="text-3xl font-bold text-gray-900">12 Today</div>
-              </div>
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col gap-2">
-                <div className="flex items-center justify-between text-gray-500">
-                  <span className="font-medium">Reminders Completed</span>
-                  <CheckCircle size={20} className="text-success" />
-                </div>
-                <div className="text-3xl font-bold text-gray-900">85%</div>
-              </div>
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col gap-2">
-                <div className="flex items-center justify-between text-gray-500">
-                  <span className="font-medium">Missed Alerts</span>
-                  <AlertTriangle size={20} className="text-yellow-500" />
-                </div>
-                <div className="text-3xl font-bold text-gray-900">2</div>
-              </div>
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col gap-2">
-                <div className="flex items-center justify-between text-gray-500">
-                  <span className="font-medium">SOS Events</span>
-                  <Activity size={20} className="text-emergency" />
-                </div>
-                <div className="text-3xl font-bold text-gray-900">0</div>
-              </div>
-            </div>
-
-            {/* Activity Logs */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">Recent Activity</h2>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between py-3 border-b">
-                  <div>
-                    <p className="font-medium text-gray-900">Recognized &ldquo;Priya (Daughter)&rdquo;</p>
-                    <p className="text-sm text-gray-500">Confidence: High</p>
-                  </div>
-                  <span className="text-sm text-gray-500">10 mins ago</span>
-                </div>
-                <div className="flex items-center justify-between py-3 border-b">
-                  <div>
-                    <p className="font-medium text-gray-900">Completed Medication &ldquo;Blood Pressure&rdquo;</p>
-                  </div>
-                  <span className="text-sm text-gray-500">2 hours ago</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === "network" && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Family & Known Persons</h2>
-              <button className="bg-accent text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-600 transition-colors">
-                + Add Person
+    <ProtectedRoute allowedRoles={['caregiver', 'admin']}>
+      <div className="min-h-screen bg-gray-50 flex">
+        {/* Sidebar */}
+        <aside className="w-64 bg-white border-r border-brand/10 h-screen p-6 sticky top-0 flex flex-col">
+          <div className="text-xl font-bold text-brand mb-8">ReMind AI</div>
+          <nav className="flex flex-col gap-1 flex-1">
+            {[
+              { id: 'overview', label: 'Overview', icon: Activity },
+              { id: 'network', label: 'Support Network', icon: Users },
+            ].map(({ id, label, icon: Icon }) => (
+              <button
+                key={id}
+                onClick={() => setActiveTab(id as typeof activeTab)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-colors ${
+                  activeTab === id
+                    ? 'bg-brand/10 text-brand font-medium'
+                    : 'text-brand/60 hover:bg-brand/5'
+                }`}
+              >
+                <Icon size={18} />
+                {label}
               </button>
+            ))}
+          </nav>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-4 py-3 text-brand/50 hover:text-emergency transition-colors text-sm"
+          >
+            <LogOut size={16} /> Sign out
+          </button>
+        </aside>
+
+        {/* Main */}
+        <main className="flex-1 p-8 overflow-y-auto">
+          {/* Header */}
+          <header className="mb-8 flex items-center justify-between">
+            <div>
+              {loading ? (
+                <Skeleton className="h-8 w-48" />
+              ) : (
+                <>
+                  <h1 className="text-2xl font-bold text-brand">
+                    {patient ? `Patient: ${patient.name}` : 'No Patient Yet'}
+                  </h1>
+                  <p className="text-brand/50 text-sm mt-0.5">
+                    Welcome back, {user?.name}
+                  </p>
+                </>
+              )}
             </div>
-            
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b text-gray-500">
-                  <th className="pb-3 font-medium">Name</th>
-                  <th className="pb-3 font-medium">Relationship</th>
-                  <th className="pb-3 font-medium">Phone</th>
-                  <th className="pb-3 font-medium text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b last:border-0 hover:bg-gray-50">
-                  <td className="py-4 font-medium">Priya</td>
-                  <td className="py-4 text-gray-600">Daughter</td>
-                  <td className="py-4 text-gray-600">+1 234 567 8900</td>
-                  <td className="py-4 text-right">
-                    <button className="text-accent hover:underline mr-4">Edit</button>
-                    <button className="text-emergency hover:underline">Remove</button>
-                  </td>
-                </tr>
-                <tr className="hover:bg-gray-50">
-                  <td className="py-4 font-medium">Dr. Sharma</td>
-                  <td className="py-4 text-gray-600">Doctor</td>
-                  <td className="py-4 text-gray-600">+1 987 654 3210</td>
-                  <td className="py-4 text-right">
-                    <button className="text-accent hover:underline mr-4">Edit</button>
-                    <button className="text-emergency hover:underline">Remove</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        )}
-      </main>
-    </div>
+            <button
+              onClick={fetchData}
+              className="p-2 rounded-xl text-brand/40 hover:text-brand hover:bg-brand/5 transition-colors"
+              title="Refresh"
+            >
+              <RefreshCw size={18} />
+            </button>
+          </header>
+
+          {/* Overview Tab */}
+          {activeTab === 'overview' && (
+            <div className="space-y-8">
+              {/* KPI Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                {[
+                  { label: 'Faces Recognized', value: kpi.faces_today, suffix: ' Today', icon: Users, color: 'text-brand' },
+                  { label: 'Reminder Compliance', value: kpi.reminder_compliance, suffix: '%', icon: CheckCircle, color: 'text-success' },
+                  { label: 'Missed Alerts', value: kpi.missed_alerts, suffix: '', icon: AlertTriangle, color: 'text-yellow-500' },
+                  { label: 'SOS Events', value: kpi.sos_events, suffix: '', icon: Activity, color: 'text-emergency' },
+                ].map(({ label, value, suffix, icon: Icon, color }) => (
+                  <div key={label} className="bg-white p-6 rounded-2xl border border-brand/10 shadow-sm flex flex-col gap-2">
+                    <div className="flex items-center justify-between text-brand/50">
+                      <span className="text-sm font-medium">{label}</span>
+                      <Icon size={18} className={color} />
+                    </div>
+                    {loading ? (
+                      <Skeleton className="h-9 w-16" />
+                    ) : (
+                      <div className="text-3xl font-bold text-brand">{value}{suffix}</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Patient Info */}
+              <div className="bg-white rounded-2xl border border-brand/10 shadow-sm p-6">
+                <h2 className="text-lg font-semibold text-brand mb-4">Patient Details</h2>
+                {loading ? (
+                  <div className="space-y-3">
+                    <Skeleton className="h-5 w-3/4" />
+                    <Skeleton className="h-5 w-1/2" />
+                  </div>
+                ) : patient ? (
+                  <dl className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <dt className="text-brand/50 mb-1">Name</dt>
+                      <dd className="font-medium text-brand">{patient.name}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-brand/50 mb-1">Date of Birth</dt>
+                      <dd className="font-medium text-brand">{patient.dob}</dd>
+                    </div>
+                    <div className="col-span-2">
+                      <dt className="text-brand/50 mb-1">Medical Notes</dt>
+                      <dd className="font-medium text-brand">{patient.medical_notes || '—'}</dd>
+                    </div>
+                  </dl>
+                ) : (
+                  <p className="text-brand/50 text-sm">
+                    No patient linked yet. Go to{' '}
+                    <button className="text-brand underline" onClick={() => setActiveTab('network')}>
+                      Support Network
+                    </button>{' '}
+                    to get started.
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Network Tab */}
+          {activeTab === 'network' && (
+            <div className="bg-white rounded-2xl border border-brand/10 shadow-sm p-6">
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h2 className="text-lg font-semibold text-brand">Family &amp; Known Persons</h2>
+                  <p className="text-sm text-brand/50 mt-0.5">
+                    {family.length} {family.length === 1 ? 'person' : 'people'} registered
+                  </p>
+                </div>
+                <Button
+                  onClick={() => setShowModal(true)}
+                  disabled={!patient}
+                  className="flex items-center gap-2"
+                >
+                  <Plus size={16} /> Add Person
+                </Button>
+              </div>
+
+              {loading ? (
+                <div className="space-y-3">
+                  {[1, 2, 3].map(i => <Skeleton key={i} className="h-14 w-full" />)}
+                </div>
+              ) : family.length === 0 ? (
+                <div className="text-center py-16 text-brand/40">
+                  <Users size={40} className="mx-auto mb-3 opacity-40" />
+                  <p className="font-medium">No family members yet</p>
+                  <p className="text-sm mt-1">Click "Add Person" to register a face</p>
+                </div>
+              ) : (
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="border-b border-brand/10 text-brand/50 text-sm">
+                      <th className="pb-3 font-medium">Photo</th>
+                      <th className="pb-3 font-medium">Name</th>
+                      <th className="pb-3 font-medium">Relationship</th>
+                      <th className="pb-3 font-medium">Phone</th>
+                      <th className="pb-3 font-medium text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {family.map(member => (
+                      <tr key={member.id} className="border-b border-brand/5 last:border-0 hover:bg-cream/50 transition-colors">
+                        <td className="py-4">
+                          {member.photo_url ? (
+                            <img
+                              src={member.photo_url}
+                              alt={member.name}
+                              className="w-10 h-10 rounded-full object-cover border border-brand/10"
+                            />
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center text-brand font-semibold text-sm">
+                              {member.name[0]}
+                            </div>
+                          )}
+                        </td>
+                        <td className="py-4 font-medium text-brand">{member.name}</td>
+                        <td className="py-4 text-brand/60">{member.relationship}</td>
+                        <td className="py-4 text-brand/60">{member.phone_number || '—'}</td>
+                        <td className="py-4 text-right">
+                          <button
+                            className="p-1.5 rounded-lg text-brand/40 hover:text-emergency hover:bg-emergency/10 transition-colors"
+                            onClick={() => handleDelete(member.id)}
+                            title="Remove"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          )}
+        </main>
+      </div>
+
+      {/* Add Family Modal */}
+      {showModal && patient && (
+        <AddFamilyModal
+          patientId={patient.id}
+          onClose={() => setShowModal(false)}
+          onSuccess={() => { fetchData(); setShowModal(false); }}
+        />
+      )}
+    </ProtectedRoute>
   );
 }

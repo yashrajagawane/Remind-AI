@@ -30,7 +30,7 @@ RS256 JWT key generation in place, RBAC FastAPI dependencies written, `slowapi` 
 | 0 | Project Scaffold & Tooling | Foundation | ✅ | Done & verified — see checklist below. Next.js **16.2.9** (plan text says 15). |
 | 1 | Database Layer & Migrations | Foundation | ✅ | Done & verified — migration applied (SQLite), seed script works, Neon guide authored |
 | 2 | Authentication & RBAC | Foundation | ✅ | Done & verified — RS256 JWT, rate limits, RBAC tests pass, UI created |
-| 3 | Patients, Family & Caregiver Dashboard | Core | ⬜ | Needs Cloudinary creds |
+| 3 | Patients, Family & Caregiver Dashboard | Core | ✅ | Done & verified — full CRUD, CSV import, Cloudinary media service, dynamic dashboard UI |
 | 4 | AI Face Recognition Engine | Core | ⬜ | DeepFace/FaceNet; sample face dataset |
 | 5 | Patient Interface | Core | ⬜ | — |
 | 6 | Reminder & Medication System | Features | ⬜ | — |
