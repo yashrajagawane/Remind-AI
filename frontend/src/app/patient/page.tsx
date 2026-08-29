@@ -94,7 +94,7 @@ export default function PatientHome() {
           <div className="flex flex-col gap-8">
             <section>
               <h2 className="mb-4 px-2 text-3xl font-bold text-gray-800">Today's Reminders</h2>
-              <ReminderFeed />
+              <ReminderFeed patientId={patient.id} />
             </section>
           </div>
         </main>

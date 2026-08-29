@@ -33,7 +33,7 @@ RS256 JWT key generation in place, RBAC FastAPI dependencies written, `slowapi` 
 | 3 | Patients, Family & Caregiver Dashboard | Core | ✅ | Done & verified — full CRUD, CSV import, Cloudinary media service, dynamic dashboard UI |
 | 4 | AI Face Recognition Engine | Core | ✅ | Done & verified — FaceNet512, cosine similarity, multi-face ranking, event logging |
 | 5 | Patient Interface | Core | ✅ | Done & verified — Large typography, dynamic CameraFeed wired to backend, patient identity resolution |
-| 6 | Reminder & Medication System | Features | ⬜ | — |
+| 6 | Reminder & Medication System | Features | ✅ | Done & verified — Full CRUD API, filtering, caregiver scheduling UI, dynamic patient feed with voice |
 | 7 | Voice Assistant | Features | ⬜ | Web Speech API (EN/HI/MR) |
 | 8 | Emergency SOS System | Features | ⬜ | — |
 | 9 | Family Portal | Features | ⬜ | — |

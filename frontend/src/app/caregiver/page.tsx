@@ -4,12 +4,13 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Users, Activity, CheckCircle, AlertTriangle,
-  LogOut, Plus, Pencil, Trash2, RefreshCw,
+  LogOut, Plus, Pencil, Trash2, RefreshCw, Clock,
 } from 'lucide-react';
 import { fetchApi } from '@/lib/api';
 import { useAuthStore } from '@/stores/auth-store';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { AddFamilyModal } from '@/components/AddFamilyModal';
+import { AddReminderModal } from '@/components/AddReminderModal';
 import { Button } from '@/components/ui/button';
 
 interface Patient {
@@ -39,12 +40,14 @@ function Skeleton({ className = '' }: { className?: string }) {
 }
 
 export default function CaregiverDashboard() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'network'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'network' | 'reminders'>('overview');
   const [patient, setPatient] = useState<Patient | null>(null);
   const [family, setFamily] = useState<FamilyMember[]>([]);
+  const [reminders, setReminders] = useState<any[]>([]);
   const [kpi] = useState<KpiData>({ faces_today: 0, reminder_compliance: 0, missed_alerts: 0, sos_events: 0 });
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showReminderModal, setShowReminderModal] = useState(false);
   const { user, logout } = useAuthStore();
   const router = useRouter();
 
@@ -70,6 +73,13 @@ export default function CaregiverDashboard() {
       if (fRes.ok) {
         const fData = await fRes.json();
         setFamily(fData.data || []);
+      }
+
+      // 3. Get reminders for this patient
+      const rRes = await fetchApi(`/reminders/?patient_id=${firstPatient.id}`);
+      if (rRes.ok) {
+        const rData = await rRes.json();
+        setReminders(rData.data || []);
       }
     } catch (err) {
       console.error(err);
@@ -103,6 +113,7 @@ export default function CaregiverDashboard() {
             {[
               { id: 'overview', label: 'Overview', icon: Activity },
               { id: 'network', label: 'Support Network', icon: Users },
+              { id: 'reminders', label: 'Reminders', icon: Clock },
             ].map(({ id, label, icon: Icon }) => (
               <button
                 key={id}
@@ -289,6 +300,85 @@ export default function CaregiverDashboard() {
               )}
             </div>
           )}
+
+          {/* Reminders Tab */}
+          {activeTab === 'reminders' && (
+            <div className="bg-white rounded-2xl border border-brand/10 shadow-sm p-6">
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h2 className="text-lg font-semibold text-brand">Scheduled Reminders</h2>
+                  <p className="text-sm text-brand/50 mt-0.5">
+                    {reminders.length} total reminders
+                  </p>
+                </div>
+                <Button
+                  onClick={() => setShowReminderModal(true)}
+                  disabled={!patient}
+                  className="flex items-center gap-2"
+                >
+                  <Plus size={16} /> Add Reminder
+                </Button>
+              </div>
+
+              {loading ? (
+                <div className="space-y-3">
+                  {[1, 2, 3].map(i => <Skeleton key={i} className="h-14 w-full" />)}
+                </div>
+              ) : reminders.length === 0 ? (
+                <div className="text-center py-16 text-brand/40">
+                  <Clock size={40} className="mx-auto mb-3 opacity-40" />
+                  <p className="font-medium">No reminders scheduled</p>
+                  <p className="text-sm mt-1">Click "Add Reminder" to schedule one</p>
+                </div>
+              ) : (
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="border-b border-brand/10 text-brand/50 text-sm">
+                      <th className="pb-3 font-medium">Title</th>
+                      <th className="pb-3 font-medium">Category</th>
+                      <th className="pb-3 font-medium">Time</th>
+                      <th className="pb-3 font-medium">Status</th>
+                      <th className="pb-3 font-medium text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {reminders.map(rem => (
+                      <tr key={rem.id} className="border-b border-brand/5 last:border-0 hover:bg-cream/50 transition-colors">
+                        <td className="py-4 font-medium text-brand">{rem.title}</td>
+                        <td className="py-4 text-brand/60 capitalize">{rem.category}</td>
+                        <td className="py-4 text-brand/60">
+                          {new Date(rem.scheduled_at).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
+                        </td>
+                        <td className="py-4">
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            rem.status === 'completed' ? 'bg-success/10 text-success' :
+                            rem.status === 'missed' ? 'bg-emergency/10 text-emergency' :
+                            'bg-brand/10 text-brand'
+                          }`}>
+                            {rem.status}
+                          </span>
+                        </td>
+                        <td className="py-4 text-right">
+                          <button
+                            className="p-1.5 rounded-lg text-brand/40 hover:text-emergency hover:bg-emergency/10 transition-colors"
+                            onClick={async () => {
+                              if (confirm('Delete this reminder?')) {
+                                await fetchApi(`/reminders/${rem.id}`, { method: 'DELETE' });
+                                fetchData();
+                              }
+                            }}
+                            title="Delete"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          )}
         </main>
       </div>
 
@@ -298,6 +388,15 @@ export default function CaregiverDashboard() {
           patientId={patient.id}
           onClose={() => setShowModal(false)}
           onSuccess={() => { fetchData(); setShowModal(false); }}
+        />
+      )}
+
+      {/* Add Reminder Modal */}
+      {showReminderModal && patient && (
+        <AddReminderModal
+          patientId={patient.id}
+          onClose={() => setShowReminderModal(false)}
+          onSuccess={() => { fetchData(); setShowReminderModal(false); }}
         />
       )}
     </ProtectedRoute>

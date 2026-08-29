@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Camera, XCircle, ScanFace } from 'lucide-react';
-import FaceResult from './FaceResult';
 import { fetchApi } from '@/lib/api';
 
 interface FaceScanResult {
