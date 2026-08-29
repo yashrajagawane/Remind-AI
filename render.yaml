@@ -19,3 +19,5 @@ services:
         sync: false
       - key: PUBLIC_KEY_CONTENT
         sync: false
+      - key: BACKEND_CORS_ORIGINS
+        sync: false
