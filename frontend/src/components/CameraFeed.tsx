@@ -107,14 +107,14 @@ export default function CameraFeed({ patientId }: Props) {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center p-6 bg-white min-h-[50vh] rounded-3xl shadow-xl border border-brand/10">
+    <div className="flex flex-col items-center justify-center p-6 bg-slate-800 min-h-[50vh] rounded-3xl shadow-xl border border-brand/20">
       <div 
         className="relative w-full max-w-2xl bg-black rounded-2xl overflow-hidden aspect-video flex items-center justify-center shadow-inner"
         role="region"
         aria-label="Camera viewfinder"
       >
         {!isCameraActive ? (
-          <div className="text-gray-400 flex flex-col items-center" aria-live="polite">
+          <div className="text-slate-400 flex flex-col items-center" aria-live="polite">
             <Camera size={64} className="mb-4 opacity-50" aria-hidden="true" />
             <span className="text-xl">Camera is off</span>
           </div>
@@ -136,12 +136,12 @@ export default function CameraFeed({ patientId }: Props) {
         {/* Overlay Results */}
         <div aria-live="assertive" aria-atomic="true">
           {scanResult && (
-            <div className="absolute bottom-6 left-6 right-6 z-10 bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-lg flex items-center gap-4">
+            <div className="absolute bottom-6 left-6 right-6 z-10 bg-slate-800/95 backdrop-blur-sm p-4 rounded-xl shadow-lg flex items-center gap-4">
               {scanResult.photo_url && (
                 <img src={scanResult.photo_url} alt={`Profile photo of ${scanResult.name}`} className="w-16 h-16 rounded-full object-cover border-2 border-brand" />
               )}
               <div>
-                <h3 className="text-2xl font-bold text-gray-900">{scanResult.name}</h3>
+                <h3 className="text-2xl font-bold text-slate-100">{scanResult.name}</h3>
                 <p className="text-lg text-brand font-medium">{scanResult.relationship}</p>
               </div>
               <div className="ml-auto flex items-center justify-center bg-green-100 text-green-700 px-4 py-2 rounded-lg font-bold">
@@ -183,7 +183,7 @@ export default function CameraFeed({ patientId }: Props) {
             <button
               onClick={stopCamera}
               aria-label="Turn off camera"
-              className="flex items-center justify-center gap-3 bg-gray-200 text-gray-800 py-6 px-8 rounded-2xl text-2xl font-semibold shadow hover:bg-gray-300 transition-colors"
+              className="flex items-center justify-center gap-3 bg-slate-700 text-slate-100 py-6 px-8 rounded-2xl text-2xl font-semibold shadow hover:bg-slate-600 transition-colors"
             >
               <XCircle size={36} aria-hidden="true" />
               Stop

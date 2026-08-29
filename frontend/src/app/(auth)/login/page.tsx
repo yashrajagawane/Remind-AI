@@ -73,7 +73,7 @@ export default function LoginPage() {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-gray-700">Email</Label>
+              <Label htmlFor="email" className="text-slate-300">Email</Label>
               <Input 
                 id="email" 
                 type="email" 
@@ -85,8 +85,8 @@ export default function LoginPage() {
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-gray-700">Password</Label>
-                <Link href="#" className="text-sm text-gray-600 hover:text-gray-900 hover:underline">Forgot password?</Link>
+                <Label htmlFor="password" className="text-slate-300">Password</Label>
+                <Link href="#" className="text-sm text-slate-300 hover:text-slate-100 hover:underline">Forgot password?</Link>
               </div>
               <Input 
                 id="password" 
@@ -106,9 +106,9 @@ export default function LoginPage() {
           </form>
         </CardContent>
         <CardFooter className="justify-center border-t border-brand/5 mt-4 pt-6">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-slate-300">
             Don't have an account?{' '}
-            <Link href="/register" className="text-gray-900 font-medium hover:underline">
+            <Link href="/register" className="text-slate-100 font-medium hover:underline">
               Create one
             </Link>
           </p>

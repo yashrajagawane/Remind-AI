@@ -151,8 +151,8 @@ export default function VoiceAssistant({ onScanTrigger, onSOSTrigger }: Props) {
   return (
     <div className="fixed top-6 right-6 z-50 flex flex-col items-end gap-3" role="region" aria-label="Voice Assistant">
       {/* Language Switcher */}
-      <div className="flex items-center gap-1 bg-white/90 backdrop-blur-sm rounded-full shadow-lg px-2 py-1" role="radiogroup" aria-label="Select voice language">
-        <Globe size={14} className="text-brand/50 mr-1" aria-hidden="true" />
+      <div className="flex items-center gap-1 bg-slate-800/90 backdrop-blur-sm rounded-full shadow-lg px-2 py-1" role="radiogroup" aria-label="Select voice language">
+        <Globe size={14} className="text-brand/80 mr-1" aria-hidden="true" />
         {langs.map(l => (
           <button
             key={l}
@@ -162,7 +162,7 @@ export default function VoiceAssistant({ onScanTrigger, onSOSTrigger }: Props) {
             className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
               lang === l
                 ? 'bg-brand text-white'
-                : 'text-brand/60 hover:bg-brand/10'
+                : 'text-brand/80 hover:bg-brand/10'
             }`}
           >
             {LANG_LABELS[l]}
@@ -178,7 +178,7 @@ export default function VoiceAssistant({ onScanTrigger, onSOSTrigger }: Props) {
         className={`flex items-center justify-center p-5 rounded-full shadow-xl transition-all ${
           isListening
             ? 'bg-brand text-white animate-pulse scale-110'
-            : 'bg-white text-brand/60 hover:bg-brand/5'
+            : 'bg-slate-800 text-brand/80 hover:bg-brand/5'
         }`}
       >
         {isListening ? <Mic size={28} aria-hidden="true" /> : <MicOff size={28} aria-hidden="true" />}
@@ -193,7 +193,7 @@ export default function VoiceAssistant({ onScanTrigger, onSOSTrigger }: Props) {
 
       {/* Listening indicator */}
       {isListening && !transcript && (
-        <div className="bg-white/90 backdrop-blur-sm text-brand/60 px-4 py-2 rounded-xl text-xs shadow font-medium" role="status" aria-live="polite">
+        <div className="bg-slate-800/90 backdrop-blur-sm text-brand/80 px-4 py-2 rounded-xl text-xs shadow font-medium" role="status" aria-live="polite">
           Listening in {LANG_LABELS[lang]}...
         </div>
       )}

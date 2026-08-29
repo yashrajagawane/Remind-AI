@@ -69,16 +69,16 @@ export function AddFamilyModal({ patientId, onClose, onSuccess }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-brand/20 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 relative">
+      <div className="bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 relative">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-brand/40 hover:text-brand transition-colors"
+          className="absolute top-4 right-4 text-brand/70 hover:text-brand transition-colors"
         >
           <X size={20} />
         </button>
 
         <h2 className="text-xl font-semibold text-brand mb-1">Add Family Member</h2>
-        <p className="text-sm text-brand/60 mb-6">Add someone the patient should recognise</p>
+        <p className="text-sm text-brand/80 mb-6">Add someone the patient should recognise</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
@@ -94,9 +94,9 @@ export function AddFamilyModal({ patientId, onClose, onSuccess }: Props) {
               <img src={preview} alt="Preview" className="w-20 h-20 rounded-full object-cover" />
             ) : (
               <>
-                <Upload size={24} className="text-brand/40 mb-2" />
-                <p className="text-sm text-brand/60">Click to upload photo</p>
-                <p className="text-xs text-brand/40">JPEG, PNG, WEBP · max 10MB</p>
+                <Upload size={24} className="text-brand/70 mb-2" />
+                <p className="text-sm text-brand/80">Click to upload photo</p>
+                <p className="text-xs text-brand/70">JPEG, PNG, WEBP · max 10MB</p>
               </>
             )}
             <input
@@ -126,7 +126,7 @@ export function AddFamilyModal({ patientId, onClose, onSuccess }: Props) {
               value={relationship}
               onChange={e => setRelationship(e.target.value)}
               required
-              className="flex h-10 w-full rounded-md border border-brand/20 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+              className="flex h-10 w-full rounded-md border border-brand/20 bg-slate-800 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
             >
               <option value="" disabled>Select relationship…</option>
               {RELATIONSHIP_OPTIONS.map(r => (

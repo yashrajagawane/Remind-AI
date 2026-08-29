@@ -82,16 +82,16 @@ export function AddReminderModal({ patientId, onClose, onSuccess }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-brand/20 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-6 relative max-h-[90vh] overflow-y-auto">
+      <div className="bg-slate-800 rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-6 relative max-h-[90vh] overflow-y-auto">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-brand/40 hover:text-brand transition-colors"
+          className="absolute top-4 right-4 text-brand/70 hover:text-brand transition-colors"
         >
           <X size={20} />
         </button>
 
         <h2 className="text-xl font-semibold text-brand mb-1">Add Reminder</h2>
-        <p className="text-sm text-brand/60 mb-6">Schedule a medication, meal, or appointment</p>
+        <p className="text-sm text-brand/80 mb-6">Schedule a medication, meal, or appointment</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
@@ -126,7 +126,7 @@ export function AddReminderModal({ patientId, onClose, onSuccess }: Props) {
                 id="rem-category"
                 value={category}
                 onChange={e => setCategory(e.target.value)}
-                className="flex h-10 w-full rounded-md border border-brand/20 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                className="flex h-10 w-full rounded-md border border-brand/20 bg-slate-800 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
               >
                 {CATEGORIES.map(c => (
                   <option key={c.value} value={c.value}>{c.label}</option>
@@ -140,7 +140,7 @@ export function AddReminderModal({ patientId, onClose, onSuccess }: Props) {
                 id="rem-priority"
                 value={priority}
                 onChange={e => setPriority(e.target.value)}
-                className="flex h-10 w-full rounded-md border border-brand/20 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                className="flex h-10 w-full rounded-md border border-brand/20 bg-slate-800 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
               >
                 {PRIORITIES.map(p => (
                   <option key={p.value} value={p.value}>{p.label}</option>
@@ -167,7 +167,7 @@ export function AddReminderModal({ patientId, onClose, onSuccess }: Props) {
                 id="rem-recur"
                 value={recurrence}
                 onChange={e => setRecurrence(e.target.value)}
-                className="flex h-10 w-full rounded-md border border-brand/20 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                className="flex h-10 w-full rounded-md border border-brand/20 bg-slate-800 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
               >
                 {RECURRENCES.map(r => (
                   <option key={r.value} value={r.value}>{r.label}</option>

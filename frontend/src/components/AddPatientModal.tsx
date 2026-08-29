@@ -35,10 +35,10 @@ export function AddPatientModal({ onClose, onSuccess }: { onClose: () => void, o
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-brand/20 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden flex flex-col">
-        <div className="flex items-center justify-between p-6 border-b border-brand/10">
+      <div className="bg-slate-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden flex flex-col">
+        <div className="flex items-center justify-between p-6 border-b border-brand/20">
           <h2 className="text-xl font-bold text-brand">Register New Patient</h2>
-          <button onClick={onClose} className="p-2 -mr-2 rounded-xl text-brand/40 hover:text-brand hover:bg-brand/5">
+          <button onClick={onClose} className="p-2 -mr-2 rounded-xl text-brand/70 hover:text-brand hover:bg-brand/5">
             <X size={20} />
           </button>
         </div>

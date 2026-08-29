@@ -109,14 +109,14 @@ export default function AnalyticsDashboard() {
 
   return (
     <ProtectedRoute allowedRoles={['caregiver', 'admin']}>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-slate-900">
         {/* Top Bar */}
-        <header className="bg-white border-b border-brand/10 px-8 py-4 sticky top-0 z-10 flex items-center justify-between" role="banner">
+        <header className="bg-slate-800 border-b border-brand/20 px-8 py-4 sticky top-0 z-10 flex items-center justify-between" role="banner">
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.push('/caregiver')}
               aria-label="Back to dashboard"
-              className="p-2 rounded-xl text-brand/40 hover:text-brand hover:bg-brand/5 transition-colors"
+              className="p-2 rounded-xl text-brand/70 hover:text-brand hover:bg-brand/5 transition-colors"
             >
               <ArrowLeft size={20} aria-hidden="true" />
             </button>
@@ -124,7 +124,7 @@ export default function AnalyticsDashboard() {
               <h1 className="text-xl font-bold text-brand flex items-center gap-2">
                 <BarChart3 size={22} aria-hidden="true" /> Analytics Dashboard
               </h1>
-              <p className="text-sm text-brand/50" aria-live="polite">
+              <p className="text-sm text-brand/80" aria-live="polite">
                 {patientName ? `Patient: ${patientName}` : 'Loading...'}
               </p>
             </div>
@@ -133,7 +133,7 @@ export default function AnalyticsDashboard() {
             <button
               onClick={fetchData}
               aria-label="Refresh data"
-              className="p-2 rounded-xl text-brand/40 hover:text-brand hover:bg-brand/5 transition-colors"
+              className="p-2 rounded-xl text-brand/70 hover:text-brand hover:bg-brand/5 transition-colors"
               title="Refresh"
             >
               <RefreshCw size={18} aria-hidden="true" />
@@ -154,7 +154,7 @@ export default function AnalyticsDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             {loading ? (
               Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="bg-white p-6 rounded-2xl border border-brand/10 shadow-sm">
+                <div key={i} className="bg-slate-800 p-6 rounded-2xl border border-brand/20 shadow-sm">
                   <Skeleton className="h-5 w-24 mb-3" />
                   <Skeleton className="h-9 w-16" />
                 </div>
@@ -166,8 +166,8 @@ export default function AnalyticsDashboard() {
                 { label: 'Missed', value: kpi.missed_reminders, icon: AlertTriangle, color: 'text-yellow-500' },
                 { label: 'SOS Events', value: kpi.sos_events, icon: AlertTriangle, color: 'text-emergency' },
               ].map(({ label, value, icon: Icon, color }) => (
-                <div key={label} className="bg-white p-6 rounded-2xl border border-brand/10 shadow-sm">
-                  <div className="flex items-center justify-between text-brand/50 mb-2">
+                <div key={label} className="bg-slate-800 p-6 rounded-2xl border border-brand/20 shadow-sm">
+                  <div className="flex items-center justify-between text-brand/80 mb-2">
                     <span className="text-sm font-medium">{label}</span>
                     <Icon size={18} className={color} />
                   </div>
@@ -179,7 +179,7 @@ export default function AnalyticsDashboard() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             {/* Recognition Trends — Area Chart */}
-            <div className="bg-white p-6 rounded-2xl border border-brand/10 shadow-sm">
+            <div className="bg-slate-800 p-6 rounded-2xl border border-brand/20 shadow-sm">
               <h3 className="text-lg font-semibold text-brand mb-4 flex items-center gap-2">
                 <TrendingUp size={18} /> Face Recognition Trends (7 days)
               </h3>
@@ -217,14 +217,14 @@ export default function AnalyticsDashboard() {
             </div>
 
             {/* Reminder Compliance — Bar Chart */}
-            <div className="bg-white p-6 rounded-2xl border border-brand/10 shadow-sm">
+            <div className="bg-slate-800 p-6 rounded-2xl border border-brand/20 shadow-sm">
               <h3 className="text-lg font-semibold text-brand mb-4 flex items-center gap-2">
                 <BarChart3 size={18} /> Reminder Compliance by Category
               </h3>
               {loading ? (
                 <Skeleton className="h-64 w-full" />
               ) : reminderData.length === 0 ? (
-                <div className="h-64 flex items-center justify-center text-brand/40">
+                <div className="h-64 flex items-center justify-center text-brand/70">
                   No reminder data available
                 </div>
               ) : (
@@ -251,7 +251,7 @@ export default function AnalyticsDashboard() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Compliance Pie Chart */}
-            <div className="bg-white p-6 rounded-2xl border border-brand/10 shadow-sm">
+            <div className="bg-slate-800 p-6 rounded-2xl border border-brand/20 shadow-sm">
               <h3 className="text-lg font-semibold text-brand mb-4 flex items-center gap-2">
                 <PieIcon size={18} /> Overall Compliance Breakdown
               </h3>
@@ -283,21 +283,21 @@ export default function AnalyticsDashboard() {
                   </PieChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="h-64 flex items-center justify-center text-brand/40">
+                <div className="h-64 flex items-center justify-center text-brand/70">
                   No reminder data available
                 </div>
               )}
             </div>
 
             {/* SOS Event Log */}
-            <div className="bg-white p-6 rounded-2xl border border-brand/10 shadow-sm">
+            <div className="bg-slate-800 p-6 rounded-2xl border border-brand/20 shadow-sm">
               <h3 className="text-lg font-semibold text-brand mb-4 flex items-center gap-2">
                 <AlertTriangle size={18} /> SOS Event Log
               </h3>
               {loading ? (
                 <Skeleton className="h-64 w-full" />
               ) : sosData.length === 0 ? (
-                <div className="h-64 flex items-center justify-center text-brand/40 flex-col gap-2">
+                <div className="h-64 flex items-center justify-center text-brand/70 flex-col gap-2">
                   <AlertTriangle size={32} className="opacity-30" />
                   <p>No SOS events recorded</p>
                 </div>
@@ -309,14 +309,14 @@ export default function AnalyticsDashboard() {
                       className={`p-3 rounded-xl border flex items-center justify-between ${
                         e.is_active
                           ? 'border-emergency/30 bg-emergency/5'
-                          : 'border-brand/10 bg-brand/5'
+                          : 'border-brand/20 bg-brand/5'
                       }`}
                     >
                       <div>
                         <p className="font-medium text-brand text-sm">
                           Via {e.trigger_method} &middot; {e.contacts_notified} contacts notified
                         </p>
-                        <p className="text-xs text-brand/50">
+                        <p className="text-xs text-brand/80">
                           {new Date(e.created_at).toLocaleString()}
                         </p>
                       </div>

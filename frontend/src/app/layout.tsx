@@ -37,10 +37,6 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-// Runs before paint to apply the saved (or system) color theme and avoid a
-// flash of the wrong theme. Kept in sync with the key used by the UI store.
-const themeInitScript = `(function(){try{var t=localStorage.getItem('remind-theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}if(t==='dark'){document.documentElement.classList.add('dark');}}catch(e){}})();`;
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -50,10 +46,9 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
       <body className="flex min-h-full flex-col">
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         {/* Skip to content — WCAG 2.4.1 */}
         <a
           href="#main-content"

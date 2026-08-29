@@ -96,16 +96,16 @@ export default function ReminderFeed({ patientId }: Props) {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-3xl shadow-xl border border-brand/10 p-6 h-[50vh] flex items-center justify-center">
-        <div className="animate-pulse text-xl text-brand/40">Loading reminders...</div>
+      <div className="bg-slate-800 rounded-3xl shadow-xl border border-brand/20 p-6 h-[50vh] flex items-center justify-center">
+        <div className="animate-pulse text-xl text-brand/70">Loading reminders...</div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-3xl shadow-xl border border-brand/10 p-6 h-[50vh] overflow-y-auto">
+    <div className="bg-slate-800 rounded-3xl shadow-xl border border-brand/20 p-6 h-[50vh] overflow-y-auto">
       {reminders.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-full text-brand/40">
+        <div className="flex flex-col items-center justify-center h-full text-brand/70">
           <CheckCircle2 size={48} className="mb-3 opacity-40" />
           <p className="text-xl font-medium">No reminders for today</p>
         </div>
@@ -116,14 +116,14 @@ export default function ReminderFeed({ patientId }: Props) {
               key={reminder.id}
               className={`p-5 rounded-2xl border-l-8 flex items-center gap-5 transition-all ${
                 reminder.status === 'completed'
-                  ? 'bg-gray-50 border-gray-300 opacity-60'
+                  ? 'bg-slate-900 border-slate-700 opacity-60'
                   : priorityColor(reminder.priority)
               }`}
             >
               <div
                 className={`p-3 rounded-full ${
                   reminder.status === 'completed'
-                    ? 'bg-gray-200 text-gray-500'
+                    ? 'bg-slate-700 text-slate-400'
                     : 'bg-brand/10 text-brand'
                 }`}
               >
@@ -133,14 +133,14 @@ export default function ReminderFeed({ patientId }: Props) {
               <div className="flex-1">
                 <h3
                   className={`text-2xl font-semibold ${
-                    reminder.status === 'completed' ? 'text-gray-500 line-through' : 'text-gray-900'
+                    reminder.status === 'completed' ? 'text-slate-400 line-through' : 'text-slate-100'
                   }`}
                 >
                   {reminder.title}
                 </h3>
-                <p className="text-lg text-gray-600 mt-0.5">{formatTime(reminder.scheduled_at)}</p>
+                <p className="text-lg text-slate-300 mt-0.5">{formatTime(reminder.scheduled_at)}</p>
                 {reminder.description && (
-                  <p className="text-sm text-gray-500 mt-1">{reminder.description}</p>
+                  <p className="text-sm text-slate-400 mt-1">{reminder.description}</p>
                 )}
               </div>
 

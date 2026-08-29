@@ -132,15 +132,15 @@ export default function FamilyPortal() {
       case 'upcoming': return 'bg-brand';
       case 'missed': return 'bg-yellow-500';
       case 'sos': return 'bg-emergency';
-      default: return 'bg-gray-400';
+      default: return 'bg-slate-500';
     }
   };
 
   return (
     <ProtectedRoute allowedRoles={['family', 'caregiver', 'admin']}>
-      <div className="min-h-screen bg-gray-50 flex">
+      <div className="min-h-screen bg-slate-900 flex">
         {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-brand/10 h-screen p-6 sticky top-0 flex flex-col" aria-label="Sidebar Navigation">
+        <aside className="w-64 bg-slate-800 border-r border-brand/20 h-screen p-6 sticky top-0 flex flex-col" aria-label="Sidebar Navigation">
           <div className="flex items-center gap-2 mb-8">
             <Heart size={22} className="text-brand" aria-hidden="true" />
             <div className="text-xl font-bold text-brand">Family Portal</div>
@@ -158,7 +158,7 @@ export default function FamilyPortal() {
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-colors ${
                   activeTab === id
                     ? 'bg-brand/10 text-brand font-medium'
-                    : 'text-brand/60 hover:bg-brand/5'
+                    : 'text-brand/80 hover:bg-brand/5'
                 }`}
               >
                 <Icon size={18} aria-hidden="true" />
@@ -166,12 +166,12 @@ export default function FamilyPortal() {
               </button>
             ))}
           </nav>
-          <div className="text-sm text-brand/40 mb-3" aria-live="polite">
+          <div className="text-sm text-brand/70 mb-3" aria-live="polite">
             Logged in as: {user?.name}
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 px-4 py-3 text-brand/50 hover:text-emergency transition-colors text-sm"
+            className="flex items-center gap-3 px-4 py-3 text-brand/80 hover:text-emergency transition-colors text-sm"
           >
             <LogOut size={16} aria-hidden="true" /> Sign out
           </button>
@@ -202,7 +202,7 @@ export default function FamilyPortal() {
                 <h1 className="text-2xl font-bold text-brand">
                   {patient ? `Patient: ${patient.name}` : 'No Patient Linked'}
                 </h1>
-                <p className="text-brand/50 text-sm mt-0.5">
+                <p className="text-brand/80 text-sm mt-0.5">
                   Stay updated on your loved one's daily activities
                 </p>
               </>
@@ -217,11 +217,11 @@ export default function FamilyPortal() {
               { label: 'Missed', value: missedReminders.length, icon: XCircle, color: 'text-yellow-500' },
               { label: 'SOS Events', value: sosEvents.length, icon: AlertTriangle, color: 'text-emergency' },
             ].map(({ label, value, icon: Icon, color }) => (
-              <div key={label} className="bg-white p-5 rounded-2xl border border-brand/10 shadow-sm flex items-center gap-4">
+              <div key={label} className="bg-slate-800 p-5 rounded-2xl border border-brand/20 shadow-sm flex items-center gap-4">
                 <Icon size={24} className={color} />
                 <div>
                   <div className="text-2xl font-bold text-brand">{value}</div>
-                  <div className="text-sm text-brand/50">{label}</div>
+                  <div className="text-sm text-brand/80">{label}</div>
                 </div>
               </div>
             ))}
@@ -229,22 +229,22 @@ export default function FamilyPortal() {
 
           {/* Timeline Tab */}
           {activeTab === 'timeline' && (
-            <div className="bg-white rounded-2xl border border-brand/10 shadow-sm p-6">
+            <div className="bg-slate-800 rounded-2xl border border-brand/20 shadow-sm p-6">
               <h2 className="text-lg font-semibold text-brand mb-6">Activity Timeline</h2>
               {timeline.length === 0 ? (
-                <div className="text-center py-12 text-brand/40">
+                <div className="text-center py-12 text-brand/70">
                   <Activity size={36} className="mx-auto mb-3 opacity-40" />
                   <p className="font-medium">No activity recorded yet</p>
                 </div>
               ) : (
-                <div className="relative border-l-2 border-brand/10 ml-3 space-y-6">
+                <div className="relative border-l-2 border-brand/20 ml-3 space-y-6">
                   {timeline.slice(0, 20).map((item, idx) => (
                     <div key={idx} className="pl-6 relative">
                       <div className={`w-3 h-3 rounded-full absolute -left-[7px] top-1.5 ${dotColor(item.type)}`} />
                       <p className="font-medium text-brand">{item.label}</p>
                       <div className="flex items-center gap-3 mt-0.5">
-                        <span className="text-sm text-brand/50 capitalize">{item.detail}</span>
-                        <span className="text-xs text-brand/40">
+                        <span className="text-sm text-brand/80 capitalize">{item.detail}</span>
+                        <span className="text-xs text-brand/70">
                           {new Date(item.time).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
                         </span>
                       </div>
@@ -257,19 +257,19 @@ export default function FamilyPortal() {
 
           {/* Reminders Tab */}
           {activeTab === 'reminders' && (
-            <div className="bg-white rounded-2xl border border-brand/10 shadow-sm p-6">
+            <div className="bg-slate-800 rounded-2xl border border-brand/20 shadow-sm p-6">
               <h2 className="text-lg font-semibold text-brand mb-6">
                 All Reminders ({reminders.length})
               </h2>
               {reminders.length === 0 ? (
-                <div className="text-center py-12 text-brand/40">
+                <div className="text-center py-12 text-brand/70">
                   <Clock size={36} className="mx-auto mb-3 opacity-40" />
                   <p className="font-medium">No reminders scheduled</p>
                 </div>
               ) : (
                 <table className="w-full text-left">
                   <thead>
-                    <tr className="border-b border-brand/10 text-brand/50 text-sm">
+                    <tr className="border-b border-brand/20 text-brand/80 text-sm">
                       <th className="pb-3 font-medium">Title</th>
                       <th className="pb-3 font-medium">Category</th>
                       <th className="pb-3 font-medium">Time</th>
@@ -278,15 +278,15 @@ export default function FamilyPortal() {
                   </thead>
                   <tbody>
                     {reminders.map(rem => (
-                      <tr key={rem.id} className="border-b border-brand/5 last:border-0 hover:bg-cream/50 transition-colors">
+                      <tr key={rem.id} className="border-b border-brand/5 last:border-0 hover:bg-slate-900/50 transition-colors">
                         <td className="py-3">
                           <div className="flex items-center gap-2">
                             {getCategoryIcon(rem.category)}
                             <span className="font-medium text-brand">{rem.title}</span>
                           </div>
                         </td>
-                        <td className="py-3 text-brand/60 capitalize">{rem.category}</td>
-                        <td className="py-3 text-brand/60">
+                        <td className="py-3 text-brand/80 capitalize">{rem.category}</td>
+                        <td className="py-3 text-brand/80">
                           {new Date(rem.scheduled_at).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
                         </td>
                         <td className="py-3">
@@ -308,12 +308,12 @@ export default function FamilyPortal() {
 
           {/* SOS History Tab */}
           {activeTab === 'sos' && (
-            <div className="bg-white rounded-2xl border border-brand/10 shadow-sm p-6">
+            <div className="bg-slate-800 rounded-2xl border border-brand/20 shadow-sm p-6">
               <h2 className="text-lg font-semibold text-brand mb-6">
                 Emergency History ({sosEvents.length})
               </h2>
               {sosEvents.length === 0 ? (
-                <div className="text-center py-12 text-brand/40">
+                <div className="text-center py-12 text-brand/70">
                   <AlertTriangle size={36} className="mx-auto mb-3 opacity-40" />
                   <p className="font-medium">No emergency events recorded</p>
                   <p className="text-sm mt-1">That's a good thing!</p>
@@ -326,19 +326,19 @@ export default function FamilyPortal() {
                       className={`p-4 rounded-xl border flex items-center justify-between ${
                         event.is_active
                           ? 'border-emergency/30 bg-emergency/5'
-                          : 'border-brand/10 bg-brand/5'
+                          : 'border-brand/20 bg-brand/5'
                       }`}
                     >
                       <div className="flex items-center gap-3">
                         <AlertTriangle
                           size={20}
-                          className={event.is_active ? 'text-emergency' : 'text-brand/40'}
+                          className={event.is_active ? 'text-emergency' : 'text-brand/70'}
                         />
                         <div>
                           <p className="font-medium text-brand">
                             SOS triggered via {event.trigger_method}
                           </p>
-                          <p className="text-sm text-brand/50">
+                          <p className="text-sm text-brand/80">
                             {new Date(event.created_at).toLocaleString()}
                           </p>
                         </div>
