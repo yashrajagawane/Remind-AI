@@ -149,14 +149,16 @@ export default function VoiceAssistant({ onScanTrigger, onSOSTrigger }: Props) {
   const langs: VoiceLang[] = ['en-US', 'hi-IN', 'mr-IN'];
 
   return (
-    <div className="fixed top-6 right-6 z-50 flex flex-col items-end gap-3">
+    <div className="fixed top-6 right-6 z-50 flex flex-col items-end gap-3" role="region" aria-label="Voice Assistant">
       {/* Language Switcher */}
-      <div className="flex items-center gap-1 bg-white/90 backdrop-blur-sm rounded-full shadow-lg px-2 py-1">
-        <Globe size={14} className="text-brand/50 mr-1" />
+      <div className="flex items-center gap-1 bg-white/90 backdrop-blur-sm rounded-full shadow-lg px-2 py-1" role="radiogroup" aria-label="Select voice language">
+        <Globe size={14} className="text-brand/50 mr-1" aria-hidden="true" />
         {langs.map(l => (
           <button
             key={l}
             onClick={() => switchLang(l)}
+            role="radio"
+            aria-checked={lang === l}
             className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
               lang === l
                 ? 'bg-brand text-white'
@@ -171,26 +173,27 @@ export default function VoiceAssistant({ onScanTrigger, onSOSTrigger }: Props) {
       {/* Mic Button */}
       <button
         onClick={isListening ? stopListening : startListening}
+        aria-pressed={isListening}
+        aria-label={isListening ? 'Stop listening' : 'Start listening'}
         className={`flex items-center justify-center p-5 rounded-full shadow-xl transition-all ${
           isListening
             ? 'bg-brand text-white animate-pulse scale-110'
             : 'bg-white text-brand/60 hover:bg-brand/5'
         }`}
-        title={isListening ? 'Stop listening' : 'Start listening'}
       >
-        {isListening ? <Mic size={28} /> : <MicOff size={28} />}
+        {isListening ? <Mic size={28} aria-hidden="true" /> : <MicOff size={28} aria-hidden="true" />}
       </button>
 
       {/* Live Transcript Bubble */}
       {isListening && transcript && (
-        <div className="bg-brand/90 text-white px-4 py-2.5 rounded-xl max-w-xs text-sm shadow-lg animate-in fade-in">
+        <div className="bg-brand/90 text-white px-4 py-2.5 rounded-xl max-w-xs text-sm shadow-lg animate-in fade-in" aria-live="assertive" role="status">
           &ldquo;{transcript}&rdquo;
         </div>
       )}
 
       {/* Listening indicator */}
       {isListening && !transcript && (
-        <div className="bg-white/90 backdrop-blur-sm text-brand/60 px-4 py-2 rounded-xl text-xs shadow font-medium">
+        <div className="bg-white/90 backdrop-blur-sm text-brand/60 px-4 py-2 rounded-xl text-xs shadow font-medium" role="status" aria-live="polite">
           Listening in {LANG_LABELS[lang]}...
         </div>
       )}

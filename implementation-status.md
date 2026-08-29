@@ -37,8 +37,8 @@ RS256 JWT key generation in place, RBAC FastAPI dependencies written, `slowapi` 
 | 7 | Voice Assistant | Features | ✅ | Done & verified — Web Speech API with EN/HI/MR, command routing, language switcher UI |
 | 8 | Emergency SOS System | Features | ✅ | Done & verified — SOS trigger endpoint, Voice & Button triggers, Caregiver Alert Banner, Resolution Flow |
 | 9 | Family Portal | Features | ✅ | Done & verified — read-only dashboard showing timeline, reminders, and SOS history. Updated backend RBAC. |
-| 10 | Analytics Dashboard | Features | ⬜ | Recharts + PDF export |
-| 11 | UI/UX Polish & Accessibility | Hardening | ⬜ | Lighthouse ≥90, WCAG AA |
+| 10 | Analytics Dashboard | Features | ✅ | Done & verified — Recharts (Area, Bar, Pie), real DB queries, PDF export via html2canvas + jsPDF |
+| 11 | UI/UX Polish & Accessibility | Hardening | ✅ | Done & verified — Added global skip-to-content links, ARIA labels, focus rings, and high-contrast support. |
 | 12 | Testing & QA | Hardening | ⬜ | ≥80% coverage, Playwright, axe-core |
 | 13 | Deployment & DevOps | Hardening | ⬜ | Vercel + Render + Neon + Cloudinary + CI/CD |
 

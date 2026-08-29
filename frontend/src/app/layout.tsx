@@ -54,6 +54,15 @@ export default function RootLayout({
     >
       <body className="flex min-h-full flex-col">
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        {/* Skip to content — WCAG 2.4.1 */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:bg-brand focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-medium focus:shadow-lg"
+        >
+          Skip to main content
+        </a>
+        {/* Screen reader announcements */}
+        <div id="sr-announcements" aria-live="polite" aria-atomic="true" className="sr-only" />
         {children}
       </body>
     </html>

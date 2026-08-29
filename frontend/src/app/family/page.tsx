@@ -140,12 +140,12 @@ export default function FamilyPortal() {
     <ProtectedRoute allowedRoles={['family', 'caregiver', 'admin']}>
       <div className="min-h-screen bg-gray-50 flex">
         {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-brand/10 h-screen p-6 sticky top-0 flex flex-col">
+        <aside className="w-64 bg-white border-r border-brand/10 h-screen p-6 sticky top-0 flex flex-col" aria-label="Sidebar Navigation">
           <div className="flex items-center gap-2 mb-8">
-            <Heart size={22} className="text-brand" />
+            <Heart size={22} className="text-brand" aria-hidden="true" />
             <div className="text-xl font-bold text-brand">Family Portal</div>
           </div>
-          <nav className="flex flex-col gap-1 flex-1">
+          <nav className="flex flex-col gap-1 flex-1" aria-label="Main menu">
             {([
               { id: 'timeline', label: 'Daily Timeline', icon: Activity },
               { id: 'reminders', label: 'Reminders', icon: Clock },
@@ -154,30 +154,31 @@ export default function FamilyPortal() {
               <button
                 key={id}
                 onClick={() => setActiveTab(id)}
+                aria-current={activeTab === id ? 'page' : undefined}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-colors ${
                   activeTab === id
                     ? 'bg-brand/10 text-brand font-medium'
                     : 'text-brand/60 hover:bg-brand/5'
                 }`}
               >
-                <Icon size={18} />
+                <Icon size={18} aria-hidden="true" />
                 {label}
               </button>
             ))}
           </nav>
-          <div className="text-sm text-brand/40 mb-3">
+          <div className="text-sm text-brand/40 mb-3" aria-live="polite">
             Logged in as: {user?.name}
           </div>
           <button
             onClick={handleLogout}
             className="flex items-center gap-3 px-4 py-3 text-brand/50 hover:text-emergency transition-colors text-sm"
           >
-            <LogOut size={16} /> Sign out
+            <LogOut size={16} aria-hidden="true" /> Sign out
           </button>
         </aside>
 
         {/* Main */}
-        <main className="flex-1 p-8 overflow-y-auto">
+        <main id="main-content" className="flex-1 p-8 overflow-y-auto" role="main" aria-label="Portal Content">
           {/* Active SOS Banner */}
           {activeSOS && (
             <div className="mb-6 bg-emergency/10 border border-emergency/20 text-emergency p-4 rounded-xl flex items-center gap-3 shadow-sm animate-pulse">

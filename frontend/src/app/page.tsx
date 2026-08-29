@@ -67,7 +67,7 @@ export default function LandingPage() {
   };
 
   return (
-    <main className="bg-background text-foreground relative isolate flex min-h-screen flex-col overflow-hidden">
+    <main id="main-content" role="main" className="bg-background text-foreground relative isolate flex min-h-screen flex-col overflow-hidden">
       {/* Warm brand glow — adapts to light/dark via alpha */}
       <div
         aria-hidden

@@ -76,15 +76,15 @@ export default function PatientHome() {
   return (
     <ProtectedRoute allowedRoles={['patient', 'caregiver', 'admin']}>
       <div className="bg-cream relative min-h-screen p-4 font-sans md:p-8">
-        <header className="mx-auto mb-8 flex max-w-7xl items-center justify-between">
+        <header className="mx-auto mb-8 flex max-w-7xl items-center justify-between" role="banner">
           <h1 className="text-4xl font-bold tracking-tight text-gray-900 md:text-5xl">ReMind AI</h1>
-          <div className="text-brand text-3xl font-bold">Hello, {patient.name.split(' ')[0]}</div>
+          <div className="text-brand text-3xl font-bold" aria-label={`Greeting: Hello, ${patient.name.split(' ')[0]}`}>Hello, {patient.name.split(' ')[0]}</div>
         </header>
 
-        <main className="mx-auto grid max-w-7xl grid-cols-1 gap-8 lg:grid-cols-2">
+        <main id="main-content" className="mx-auto grid max-w-7xl grid-cols-1 gap-8 lg:grid-cols-2" role="main">
           {/* Left Column: Camera Feed */}
           <div className="flex flex-col gap-8">
-            <section>
+            <section aria-label="Face recognition camera">
               <h2 className="mb-4 px-2 text-3xl font-bold text-gray-800">Who is this?</h2>
               <CameraFeed patientId={patient.id} />
             </section>
@@ -92,8 +92,8 @@ export default function PatientHome() {
 
           {/* Right Column: Reminders */}
           <div className="flex flex-col gap-8">
-            <section>
-              <h2 className="mb-4 px-2 text-3xl font-bold text-gray-800">Today's Reminders</h2>
+            <section aria-label="Today's reminders">
+              <h2 className="mb-4 px-2 text-3xl font-bold text-gray-800">Today&apos;s Reminders</h2>
               <ReminderFeed patientId={patient.id} />
             </section>
           </div>

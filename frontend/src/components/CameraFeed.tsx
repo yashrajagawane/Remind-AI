@@ -108,10 +108,14 @@ export default function CameraFeed({ patientId }: Props) {
 
   return (
     <div className="flex flex-col items-center justify-center p-6 bg-white min-h-[50vh] rounded-3xl shadow-xl border border-brand/10">
-      <div className="relative w-full max-w-2xl bg-black rounded-2xl overflow-hidden aspect-video flex items-center justify-center shadow-inner">
+      <div 
+        className="relative w-full max-w-2xl bg-black rounded-2xl overflow-hidden aspect-video flex items-center justify-center shadow-inner"
+        role="region"
+        aria-label="Camera viewfinder"
+      >
         {!isCameraActive ? (
-          <div className="text-gray-400 flex flex-col items-center">
-            <Camera size={64} className="mb-4 opacity-50" />
+          <div className="text-gray-400 flex flex-col items-center" aria-live="polite">
+            <Camera size={64} className="mb-4 opacity-50" aria-hidden="true" />
             <span className="text-xl">Camera is off</span>
           </div>
         ) : (
@@ -121,43 +125,47 @@ export default function CameraFeed({ patientId }: Props) {
             playsInline
             muted
             className="w-full h-full object-cover"
+            aria-label="Live camera feed"
           />
         )}
         
         {isScanning && (
-          <div className="absolute inset-0 bg-brand/20 animate-pulse border-4 border-brand rounded-2xl pointer-events-none" />
+          <div className="absolute inset-0 bg-brand/20 animate-pulse border-4 border-brand rounded-2xl pointer-events-none" aria-hidden="true" />
         )}
 
         {/* Overlay Results */}
-        {scanResult && (
-          <div className="absolute bottom-6 left-6 right-6 z-10 bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-lg flex items-center gap-4">
-            {scanResult.photo_url && (
-              <img src={scanResult.photo_url} alt={scanResult.name} className="w-16 h-16 rounded-full object-cover border-2 border-brand" />
-            )}
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900">{scanResult.name}</h3>
-              <p className="text-lg text-brand font-medium">{scanResult.relationship}</p>
+        <div aria-live="assertive" aria-atomic="true">
+          {scanResult && (
+            <div className="absolute bottom-6 left-6 right-6 z-10 bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-lg flex items-center gap-4">
+              {scanResult.photo_url && (
+                <img src={scanResult.photo_url} alt={`Profile photo of ${scanResult.name}`} className="w-16 h-16 rounded-full object-cover border-2 border-brand" />
+              )}
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900">{scanResult.name}</h3>
+                <p className="text-lg text-brand font-medium">{scanResult.relationship}</p>
+              </div>
+              <div className="ml-auto flex items-center justify-center bg-green-100 text-green-700 px-4 py-2 rounded-lg font-bold">
+                {scanResult.confidence_score > 0.8 ? 'High Match' : 'Match'}
+              </div>
             </div>
-            <div className="ml-auto flex items-center justify-center bg-green-100 text-green-700 px-4 py-2 rounded-lg font-bold">
-              {scanResult.confidence_score > 0.8 ? 'High Match' : 'Match'}
-            </div>
-          </div>
-        )}
+          )}
 
-        {isUnknown && (
-          <div className="absolute bottom-6 left-6 right-6 z-10 bg-red-500/90 backdrop-blur-sm p-4 rounded-xl shadow-lg flex items-center justify-center">
-            <h3 className="text-xl font-bold text-white">Face not recognized</h3>
-          </div>
-        )}
+          {isUnknown && (
+            <div className="absolute bottom-6 left-6 right-6 z-10 bg-red-500/90 backdrop-blur-sm p-4 rounded-xl shadow-lg flex items-center justify-center">
+              <h3 className="text-xl font-bold text-white">Face not recognized</h3>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="flex gap-4 mt-8 w-full max-w-2xl justify-center">
         {!isCameraActive ? (
           <button
             onClick={startCamera}
+            aria-label="Turn on camera"
             className="flex-1 flex items-center justify-center gap-3 bg-brand text-white py-6 px-8 rounded-2xl text-2xl font-semibold shadow-lg hover:bg-brand/90 transition-colors"
           >
-            <Camera size={36} />
+            <Camera size={36} aria-hidden="true" />
             Turn On Camera
           </button>
         ) : (
@@ -165,16 +173,19 @@ export default function CameraFeed({ patientId }: Props) {
             <button
               onClick={captureAndScan}
               disabled={isScanning}
+              aria-label={isScanning ? 'Scanning face' : 'Scan Face'}
+              aria-busy={isScanning}
               className="flex-1 flex items-center justify-center gap-3 bg-success text-white py-6 px-8 rounded-2xl text-2xl font-semibold shadow-lg hover:bg-green-600 transition-colors disabled:opacity-50"
             >
-              <ScanFace size={36} />
+              <ScanFace size={36} aria-hidden="true" />
               {isScanning ? 'Scanning...' : 'Scan Face'}
             </button>
             <button
               onClick={stopCamera}
+              aria-label="Turn off camera"
               className="flex items-center justify-center gap-3 bg-gray-200 text-gray-800 py-6 px-8 rounded-2xl text-2xl font-semibold shadow hover:bg-gray-300 transition-colors"
             >
-              <XCircle size={36} />
+              <XCircle size={36} aria-hidden="true" />
               Stop
             </button>
           </>

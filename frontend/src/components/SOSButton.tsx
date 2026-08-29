@@ -59,19 +59,21 @@ export const SOSButton = forwardRef<SOSButtonRef, Props>(({ patientId }, ref) =>
   return (
     <button
       onClick={() => handleSOS('button')}
+      aria-label={isTriggered ? 'Emergency help has been activated. Help is on the way.' : 'Press for emergency help'}
+      aria-pressed={isTriggered}
       className={`fixed bottom-8 right-8 z-50 flex items-center justify-center gap-4 text-white p-6 rounded-full shadow-2xl transition-all duration-300 ${
         isTriggered
           ? 'bg-red-700 w-full max-w-[90vw] right-1/2 translate-x-1/2 bottom-1/2 translate-y-1/2 animate-pulse scale-110'
           : 'bg-emergency hover:scale-105 active:scale-95'
       }`}
     >
-      <AlertTriangle size={isTriggered ? 64 : 48} />
+      <AlertTriangle size={isTriggered ? 64 : 48} aria-hidden="true" />
       <div className="flex flex-col items-start">
-        <span className={`font-bold ${isTriggered ? 'text-5xl' : 'text-3xl'}`}>
+        <span className={`font-bold ${isTriggered ? 'text-5xl' : 'text-3xl'}`} role={isTriggered ? 'alert' : undefined}>
           {isTriggered ? 'HELP IS ON THE WAY' : 'HELP'}
         </span>
         {error && (
-          <span className="text-white/80 text-sm mt-2">
+          <span className="text-white/80 text-sm mt-2" role="alert">
             Failed to contact server. Please dial emergency services directly.
           </span>
         )}

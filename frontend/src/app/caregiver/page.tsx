@@ -119,9 +119,9 @@ export default function CaregiverDashboard() {
     <ProtectedRoute allowedRoles={['caregiver', 'admin']}>
       <div className="min-h-screen bg-gray-50 flex">
         {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-brand/10 h-screen p-6 sticky top-0 flex flex-col">
+        <aside className="w-64 bg-white border-r border-brand/10 h-screen p-6 sticky top-0 flex flex-col" aria-label="Sidebar Navigation">
           <div className="text-xl font-bold text-brand mb-8">ReMind AI</div>
-          <nav className="flex flex-col gap-1 flex-1">
+          <nav className="flex flex-col gap-1 flex-1" aria-label="Main menu">
             {[
               { id: 'overview', label: 'Overview', icon: Activity },
               { id: 'network', label: 'Support Network', icon: Users },
@@ -130,27 +130,36 @@ export default function CaregiverDashboard() {
               <button
                 key={id}
                 onClick={() => setActiveTab(id as typeof activeTab)}
+                aria-current={activeTab === id ? 'page' : undefined}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-colors ${
                   activeTab === id
                     ? 'bg-brand/10 text-brand font-medium'
                     : 'text-brand/60 hover:bg-brand/5'
                 }`}
               >
-                <Icon size={18} />
+                <Icon size={18} aria-hidden="true" />
                 {label}
               </button>
             ))}
+            {/* Analytics link — navigates to dedicated page */}
+            <button
+              onClick={() => router.push('/analytics')}
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-colors text-brand/60 hover:bg-brand/5"
+            >
+              <Activity size={18} aria-hidden="true" />
+              Analytics
+            </button>
           </nav>
           <button
             onClick={handleLogout}
             className="flex items-center gap-3 px-4 py-3 text-brand/50 hover:text-emergency transition-colors text-sm"
           >
-            <LogOut size={16} /> Sign out
+            <LogOut size={16} aria-hidden="true" /> Sign out
           </button>
         </aside>
 
         {/* Main */}
-        <main className="flex-1 p-8 overflow-y-auto">
+        <main id="main-content" className="flex-1 p-8 overflow-y-auto" role="main" aria-label="Dashboard Content">
           {activeSOS && (
             <div className="mb-8 bg-emergency/10 border border-emergency/20 text-emergency p-4 rounded-xl flex items-center justify-between shadow-sm animate-pulse">
               <div className="flex items-center gap-3">
